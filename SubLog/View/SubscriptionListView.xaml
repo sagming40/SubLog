@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="SubLog.View.SubscriptionListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <TextBlock Text="📋 구독 목록 - Task 2-3에서 완성합니다"
+                   FontSize="18" Foreground="#7F8C8D"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>
