@@ -33,12 +33,14 @@ namespace SubLog.ViewModel
         {
             // DbContext 하나를 앱 전체에서 공유
             // (나중에 의존성 주입으로(DI)으로 개선 가능하지만, 지금은 직접 생성)
-            var context = new SubLogDbContext();
+            /* var context = new SubLogDbContext();
 
             _subscriptionRepo = new SubscriptionRepository(context);
-            _categoryRepo     = new CategoryRepository(context);
+            _categoryRepo     = new CategoryRepository(context); */
 
             // 앱 실행 시 대시보드를 첫 화면으로 표시
+            // ✅ 수정: 생성자에서 context를 미리 만들지 않음
+            // 각 Navigate 메서드 안에서 그때그때 새로 만듦
             NavigateDashboard();
         }
 
@@ -53,13 +55,23 @@ namespace SubLog.ViewModel
         {
             // CurrentView에 DashboardViewModel을 넣으면
             // ContentControl이 DataTemplate 규칙으로 DashboardView를 자동 표시
-            CurrentView = new DashboardViewModel(_subscriptionRepo);
+            /* CurrentView = new DashboardViewModel(_subscriptionRepo); */
+
+            // 대시보드 전용 새 DbContext + Repository 생성
+            var ctx = new SubLogDbContext();
+            CurrentView = new DashboardViewModel(new SubscriptionRepository(ctx));
         }
 
         [RelayCommand]
         private void NavigateSubscription()
         {
-            CurrentView = new SubscriptionListViewModel(_subscriptionRepo, _categoryRepo); 
+            /* CurrentView = new SubscriptionListViewModel(_subscriptionRepo, _categoryRepo); */
+            
+            // 구독목록 전용 새 DbContext + Repository 생성
+            var ctx = new SubLogDbContext();
+            CurrentView = new SubscriptionListViewModel(
+                new SubscriptionRepository(ctx),
+                new CategoryRepository(ctx));
         }
 
         [RelayCommand]
