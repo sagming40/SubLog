@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SubLog.Model;
+using SubLog.View;
 using SubLog.Repository;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -110,26 +111,61 @@ namespace SubLog.ViewModel
             await LoadDataAsync();
         }
 
-        // ══════════════════════════════════════════════════════
-        // 추가 커맨드 — Task 2-4에서 다이얼로그와 연결 예정
-        // ══════════════════════════════════════════════════════
+        // ═════════════════════════════════════════════════════════════════════════
+        // 추가 커맨드 — Task 2-4에서 다이얼로그와 연결 예정 > 다이얼로그를 추가 모드로 열기
+        // ═════════════════════════════════════════════════════════════════════════
         [RelayCommand]
-        private void Add()
+        private /* void */ async Task Add()
         {
-            MessageBox.Show("구독 추가 기능은 Task 2-4에서 구현합니다.", "준비 중",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
+            /* MessageBox.Show("구독 추가 기능은 Task 2-4에서 구현합니다.", "준비 중",
+                            MessageBoxButton.OK, MessageBoxImage.Information); */
+
+            // 카테고리 목록 로드 (ComboBox 채우기용)
+            var categories = await _categoryRepo.GetAllAsync();
+
+            // 추가 모드 ViewModel 생성 (existing 안 넘김)
+            var dialogVm = new AddEditSubscriptionViewModel(_subscriptionRepo, categories);
+
+            // 다이얼로그 생성 후 모달로 표시
+            var dialog = new AddEditSubscriptionDialog(dialogVm)
+            {
+                Owner = Application.Current.MainWindow // 메인 창 중앙에 표시
+            };
+
+            // ShowDialog(): 창을 닫을 때까지 대기, 반환값은 DialogResult
+            if (dialog.ShowDialog() == true)
+            {
+                await LoadDataAsync();  // 저장됐으면 목록 새로고침
+            }
         }
 
-        // ══════════════════════════════════════════════════════
-        // 수정 커맨드
+        // ════════════════════════════════════════════════════════════════
+        // 수정 커맨드 >> Task 2-4 추가 [ NEW! ]
         // CanExecute = nameof(IsItemSelected): 행을 선택했을 때만 버튼 활성화
-        // ══════════════════════════════════════════════════════
+        // ════════════════════════════════════════════════════════════════
         [RelayCommand(CanExecute = nameof(IsItemSelected))]
-        private void Edit()
+        private /* void */ async Task Edit()
         {
             // Task 2-4에서 AddEditSubscriptionDialog를 수정 모드로 열도록 교체 예정
-            MessageBox.Show($"'{SelectedSubscription!.Name}' 수정 기능은 Task 2-4에서 구현합니다.", "준비 중",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
+            /* MessageBox.Show($"'{SelectedSubscription!.Name}' 수정 기능은 Task 2-4에서 구현합니다.", "준비 중",
+                            MessageBoxButton.OK, MessageBoxImage.Information); */
+            if (SelectedSubscription is null) return;
+
+            var categories = await _categoryRepo.GetAllAsync();
+
+            // 수정 모드 ViewModel 생성 (선택된 구독을 existing으로 넘김)
+            var dialogVm = new AddEditSubscriptionViewModel(
+                _subscriptionRepo, categories, SelectedSubscription);
+
+            var dialog = new AddEditSubscriptionDialog(dialogVm)
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                await LoadDataAsync();  // 수정됐으면 목록 새로고침
+            }
         }
 
         // ══════════════════════════════════════════════════════

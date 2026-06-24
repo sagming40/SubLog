@@ -1,0 +1,83 @@
+﻿<Window x:Class="SubLog.View.AddEditSubscriptionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding DialogTitle}" WindowStartupLocation="CenterOwner"
+        Width="440" Height="600" ResizeMode="NoResize" Background="#F4F6F9">
+    
+    <!-- 전체를 스크롤 가능하게 감싸기 -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="28,24">
+            
+            <!-- 제목 -->
+            <TextBlock Text="{Binding DialogTitle}" Foreground="#2C3E50"
+                       Margin="0,0,0,20" FontSize="22" FontWeight="Bold"/>
+
+            <!-- ─── 서비스명 ─── -->
+            <TextBlock Text="서비스명 *" Margin="0,0,0,6" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#34495E"/>
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                       VerticalContentAlignment="Center"  Margin="0,0,0,16"
+                       Height="38" Padding="10,0" FontSize="14"/>
+
+            <!-- ─── 금액 ─── -->
+            <TextBlock Text="금액 (원) *" Margin="0,0,0,6" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#34495E"/>
+            <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}"
+                       VerticalContentAlignment="Center" Margin="0,0,0,16"
+                       Height="38" Padding="10,0" FontSize="14"/>
+
+            <!-- ─── 카테고리 ─── -->
+            <TextBlock Text="카테고리 *" Margin="0,0,0,6" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#34495E"/>
+            <ComboBox ItemsSource="{Binding Categories}" FontSize="14"
+                      VerticalContentAlignment="Center"
+                      SelectedItem="{Binding SelectedCategory}"
+                      DisplayMemberPath="Name" Height="38" Margin="0,0,0,16"/>
+
+            <!-- ─── 결제 주기 ─── -->
+            <TextBlock Text="결제 주기" Margin="0,0,0,6" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#34495E"/>
+            <ComboBox ItemsSource="{Binding BillingCycles}" FontSize="14"
+                      VerticalContentAlignment="Center"
+                      SelectedItem="{Binding SelectedBillingCycle}"
+                      Height="38" Margin="0,0,0,16"/>
+
+            <!-- ─── 결제일 ─── -->
+            <TextBlock Text="결제일 (1일 ~ 31일)" Margin="0,0,0,6" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#34495E"/>
+            <TextBox Text="{Binding BillingDay, UpdateSourceTrigger=PropertyChanged}"
+                       VerticalContentAlignment="Center" Margin="0,0,0,16"
+                       Height="38" Padding="10,0" FontSize="14"/>
+
+            <!-- ─── 시작일 ─── -->
+            <TextBlock Text="구독 시작일" Margin="0,0,0,6" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#34495E"/>
+            <DatePicker SelectedDate="{Binding StartDate}"
+                        VerticalContentAlignment="Center"
+                        Height="38" Margin="0,0,0,16" FontSize="14"/>
+
+            <!-- ─── 활성화 여부 ─── -->
+            <CheckBox Content="활성 구독" Margin="0,0,0,16"
+                      IsChecked="{Binding IsActive}" FontSize="14"/>
+
+            <!-- ─── 메모 ─── -->
+            <TextBlock Text="메모 (선택)" Margin="0,0,0,6" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#34495E"/>
+            <TextBox Text="{Binding Memo}" Margin="0,0,0,24"
+                     VerticalScrollBarVisibility="Auto"
+                     TextWrapping="Wrap" Padding="10,8"
+                     AcceptsReturn="True" Height="70" FontSize="14"/>
+
+            <!-- ─── 버튼 영역 ─── -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="취소" Command="{Binding CancelCommand}" FontSize="14"
+                        Cursor="Hand" Width="90" Height="40" Margin="0,0,10,0"/>
+                <!-- CanSave가 false면 자동으로 회색 비활성 -->
+                <Button Content="저장" Command="{Binding SaveCommand}" Cursor="Hand"
+                        Background="#3498DB" Foreground="White"
+                        Width="90" Height="40" FontSize="14" FontWeight="Bold"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Window>

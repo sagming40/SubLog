@@ -24,6 +24,7 @@ SubLog는 넷플릭스, 유튜브 프리미엄, Adobe 등 구독형 서비스를
 |------|------|
 | 📊 **대시보드** | 월별 총 지출, 카테고리 비율 도넛 차트, 최근 결제 목록 |
 | 📋 **구독 목록** | 전체 구독 서비스 조회 / 필터 / 정렬 |
+| 🎯 **구독 카탈로그** | 넷플릭스 · 유튜브 · Adobe 등 인기 서비스 원클릭 빠른 추가 |
 | ➕ **구독 추가/수정** | 서비스명, 금액, 결제 주기, 결제일, 카테고리 등록 |
 | 🗂️ **카테고리 관리** | 커스텀 카테고리 생성 / 수정 / 삭제 |
 | 🔔 **결제일 알림** | N일 전 알림 배지 표시 |
@@ -69,6 +70,7 @@ SubLog/
 │   ├── DashboardView.xaml
 │   ├── SubscriptionListView.xaml
 │   ├── AddEditSubscriptionDialog.xaml
+│   ├── CatalogDialog.xaml          # 구독 카탈로그 선택 팝업
 │   ├── CategoryManagementView.xaml
 │   └── SettingsView.xaml
 │
@@ -77,12 +79,14 @@ SubLog/
 │   ├── DashboardViewModel.cs
 │   ├── SubscriptionListViewModel.cs
 │   ├── AddEditSubscriptionViewModel.cs
+│   ├── CatalogViewModel.cs
 │   └── SettingsViewModel.cs
 │
 ├── 📁 Model/                       # 데이터 구조 (DB 테이블과 1:1 매핑)
 │   ├── Subscription.cs
 │   ├── Category.cs
-│   └── BillingCycle.cs             # enum: Monthly / Yearly / Weekly
+│   ├── BillingCycle.cs             # enum: Monthly / Yearly / Weekly
+│   └── CatalogItem.cs              # 카탈로그 프리셋 정적 데이터
 │
 ├── 📁 Data/                        # EF Core 설정
 │   ├── SubLogDbContext.cs
@@ -93,6 +97,9 @@ SubLog/
 │   ├── SubscriptionRepository.cs
 │   ├── ICategoryRepository.cs
 │   └── CategoryRepository.cs
+│
+├── 📁 Services/                    # 외부 서비스 연동
+│   └── ExchangeRateService.cs      # 한국수출입은행 환율 API
 │
 └── App.xaml                        # 앱 진입점 (StartupUri → View/MainWindow.xaml)
 ```
@@ -159,10 +166,10 @@ Update-Database
 
 ## 📅 개발 로드맵
 
-- [x] **Week 1** — 프로젝트 기반 구축 (MVVM 폴더 구조, EF Core, Repository 패턴)
-- [ ] **Week 2** — 핵심 화면 개발 (Dashboard, SubscriptionList, AddEdit Dialog)
-- [ ] **Week 3** — 고급 기능 (결제일 알림, 통계 분석, 카테고리 관리)
-- [ ] **Week 4** — 완성도 향상 + 포트폴리오 배포 (MSIX 패키징, GIF 데모)
+- [x] **EPIC 1** — 프로젝트 기반 구축 (MVVM 폴더 구조, EF Core, Repository 패턴) ✅
+- [ ] **EPIC 2** — 핵심 화면 개발 (Dashboard ✅ · SubscriptionList ✅ · AddEdit Dialog · 카탈로그) 🔄 진행 중
+- [ ] **EPIC 3** — 고급 기능 (결제일 알림, 통계 분석, 카테고리 관리, 환율 API)
+- [ ] **EPIC 4** — 완성도 향상 + 포트폴리오 배포 (MSIX 패키징, GIF 데모)
 
 ---
 
