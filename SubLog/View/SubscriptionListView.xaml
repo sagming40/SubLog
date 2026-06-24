@@ -33,9 +33,24 @@
         <Border Grid.Row="0" Padding="28,24,28,16">
             <DockPanel>
                 <!-- DockPanel.Dock="Right": 오른쪽에 고정 배치 -->
+                <!-- ❌ 기존 (버튼 하나) 
                 <Button DockPanel.Dock="Right"
                         Content="+ 구독 추가" Command="{Binding AddCommand}" 
-                        FontSize="13" FontWeight="Bold" Padding="18,9" Cursor="Hand"/>
+                        FontSize="13" FontWeight="Bold" Padding="18,9" Cursor="Hand"/> 
+                -->
+
+                <!-- ✅ 교체 (버튼 두 개를 StackPanel으로 묶기) -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+
+                    <!-- Catalog Button -->
+                    <Button Content="📚 카탈로그" Command="{Binding OpenCatalogCommand}"
+                            Margin="0,0,8,0" Padding="14,9" FontSize="13" Cursor="Hand"/>
+
+                    <!-- Add Subscription Button -->
+                    <Button Content="+ 구독 추가" Command="{Binding AddCommand}"
+                            Padding="18,9" FontSize="13" FontWeight="Bold" Cursor="Hand"/>
+                    
+                </StackPanel>
                 
                 <!-- DockPanel의 마지막 자식 → 나머지 왼쪽 공간 차지 -->
                 <StackPanel VerticalAlignment="Center">

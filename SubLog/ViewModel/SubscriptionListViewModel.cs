@@ -139,8 +139,54 @@ namespace SubLog.ViewModel
             }
         }
 
+        // ══════════════════════════════════════════════════════
+        // 카탈로그 커맨드 — 프리셋 선택 후 AddEditDialog 자동 입력
+        // ══════════════════════════════════════════════════════
+        [RelayCommand]
+        private async Task OpenCatalog()
+        {
+            // ─ Step 1: 카탈로그 다이얼로그 열기 ─
+            var catalogVm = new CatalogViewModel();
+            var catalogDialog = new CatalogDialog(catalogVm)
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            // 항목을 선택하고 "이 서비스로 추가"를 눌렀을 때만 진행
+            if (catalogDialog.ShowDialog() != true || catalogVm.SelectedItem is null)
+                return;
+
+            var catalogItem = catalogVm.SelectedItem;
+
+            // ─ Step 2: DB 카테고리 로드 → 카탈로그 CategoryName과 매핑 ─
+            var categories = (await _categoryRepo.GetAllAsync()).ToList();
+
+            // 카탈로그의 카테고리명(예: "영상")과 DB 카테고리 이름 매칭
+            var matchedCategory = categories.FirstOrDefault(c => c.Name == catalogItem.CategoryName)
+                                  ?? categories.FirstOrDefault(); // 없으면 첫 번째 카테고리
+
+            // ─ Step 3: AddEditDialog를 카탈로그 값으로 미리 채운 채로 열기 ─
+            var dialogVm = new AddEditSubscriptionViewModel(_subscriptionRepo, categories);
+
+            // 카탈로그에서 선택한 값을 입력칸에 미리 채워넣기
+            dialogVm.Name = catalogItem.Name;
+            dialogVm.Price = catalogItem.Price;
+            dialogVm.SelectedBillingCycle = catalogItem.Cycle;
+            dialogVm.SelectedCategory = matchedCategory;
+
+            var dialog = new AddEditSubscriptionDialog(dialogVm)
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                await LoadDataAsync();  // 저장됐으면 목록 새로고침
+            }
+        }
+
         // ════════════════════════════════════════════════════════════════
-        // 수정 커맨드 >> Task 2-4 추가 [ NEW! ]
+        // 수정 커맨드 >> Task 2-4 추가 완료
         // CanExecute = nameof(IsItemSelected): 행을 선택했을 때만 버튼 활성화
         // ════════════════════════════════════════════════════════════════
         [RelayCommand(CanExecute = nameof(IsItemSelected))]
