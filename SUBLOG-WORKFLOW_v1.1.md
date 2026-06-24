@@ -394,7 +394,7 @@ namespace SubLog.Repository
 
 ---
 
-## 🔄 EPIC 2. 핵심 화면 개발 — 진행 중
+## ✅ EPIC 2. 핵심 화면 개발 — 완료
 
 > 💡 **이 EPIC의 목표**
 > 앱의 핵심 화면 5개 개발. EPIC 2가 완료되면 구독 추가/조회/수정/삭제(CRUD) + 카탈로그 빠른 추가가 완전히 동작하는 앱 완성.
@@ -524,7 +524,7 @@ namespace SubLog.ViewModel
 - [x]  키워드 검색 필터 동작 확인 (서비스명 기준)
 - [x]  카테고리 / 활성화 상태 필터 동작 확인
 
-### ⏳ Task 2-4 · AddEditSubscriptionDialog (구독 추가/수정 폼)
+### ✅ Task 2-4 · AddEditSubscriptionDialog (구독 추가/수정 폼)
 
 > ⚠️ **입력값 유효성 검사 — CanExecute 패턴**
 > 서비스명이 비어있거나 금액이 0 이하이면 저장 버튼이 자동으로 비활성화됨.
@@ -571,12 +571,12 @@ public partial class AddEditSubscriptionViewModel : ObservableObject
 }
 ```
 
-- [ ]  `View/AddEditSubscriptionDialog.xaml` 작성 (TextBox, ComboBox, DatePicker, 저장/취소 버튼)
-- [ ]  `ViewModel/AddEditSubscriptionViewModel.cs` 작성 (유효성 검사 포함)
-- [ ]  추가 모드 / 수정 모드 구분 처리 (`_isEditMode` 플래그)
-- [ ]  저장 후 목록 화면 DataGrid 자동 갱신 확인
+- [x]  `View/AddEditSubscriptionDialog.xaml` 작성 (TextBox, ComboBox, DatePicker, 저장/취소 버튼)
+- [x]  `ViewModel/AddEditSubscriptionViewModel.cs` 작성 (유효성 검사 포함)
+- [x]  추가 모드 / 수정 모드 구분 처리 (`_isEditMode` 플래그)
+- [x]  저장 후 목록 화면 DataGrid 자동 갱신 확인
 
-### ⏳ Task 2-5 · 구독 카탈로그 (빠른 추가 프리셋) 🆕
+### ✅ Task 2-5 · 구독 카탈로그 (빠른 추가 프리셋) 🆕
 
 > 💡 **이 Task를 EPIC 2에 추가한 이유**
 > "수동 입력이 귀찮아서 앱을 안 쓰게 되지 않을까?"라는 사용자 경험 문제를 개발자 스스로 발견하고 해결한 사례.
@@ -626,12 +626,12 @@ namespace SubLog.Model
 
 관련 파일: `Model/CatalogItem.cs`, `View/CatalogDialog.xaml`, `ViewModel/CatalogViewModel.cs`
 
-- [ ]  `Model/CatalogItem.cs` 생성 (CatalogItem 클래스 + SubscriptionCatalog 정적 데이터)
-- [ ]  `View/CatalogDialog.xaml` 생성 (카탈로그 목록 ListBox + 선택/취소 버튼)
-- [ ]  `ViewModel/CatalogViewModel.cs` 생성 (Items 바인딩 + 선택 커맨드)
-- [ ]  `AddEditSubscriptionDialog` 에 "카탈로그에서 선택" 버튼 추가
-- [ ]  카탈로그 항목 클릭 시 AddEdit 폼 자동 입력 확인
-- [ ]  **✅ EPIC 2 완료 → GitHub Desktop으로 커밋 Push**
+- [x]  `Model/CatalogItem.cs` 생성 (CatalogItem 클래스 + SubscriptionCatalog 정적 데이터)
+- [x]  `View/CatalogDialog.xaml` 생성 (카탈로그 목록 ListBox + 선택/취소 버튼)
+- [x]  `ViewModel/CatalogViewModel.cs` 생성 (Items 바인딩 + 선택 커맨드)
+- [x]  `AddEditSubscriptionDialog` 에 "카탈로그에서 선택" 버튼 추가
+- [x]  카탈로그 항목 클릭 시 AddEdit 폼 자동 입력 확인
+- [x]  **✅ EPIC 2 완료 → GitHub Desktop으로 커밋 Push**
 
 ---
 
@@ -904,7 +904,7 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 
 ## GitHub 링크
 
-> 추후 추가 예정
+> https://github.com/sagming40/SubLog
 
 ---
 
