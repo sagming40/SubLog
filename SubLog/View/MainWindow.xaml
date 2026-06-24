@@ -27,6 +27,11 @@
         <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
             <view:SettingsView />
         </DataTemplate>
+
+        <!-- ✅ 아래 줄 추가 -->
+        <DataTemplate DataType="{x:Type vm:CategoryManagementViewModel}">
+            <view:CategoryManagementView/>
+        </DataTemplate>
     </Window.Resources>
 
     <!--
@@ -68,6 +73,13 @@
 
                     <Button Content="📋 구독 목록" Padding="16,12" Margin="0,2"
                             Command="{Binding NavigateSubscriptionCommand}"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent" Foreground="White"
+                            BorderThickness="0" FontSize="13" Cursor="Hand"/>
+                    
+                    <!-- ✅ 아래 버튼 추가 -->
+                    <Button Content="🏷 카테고리" Padding="16,12" Margin="0,2"
+                            Command="{Binding NavigateCategoryManagementCommand}"
                             HorizontalContentAlignment="Left"
                             Background="Transparent" Foreground="White"
                             BorderThickness="0" FontSize="13" Cursor="Hand"/>

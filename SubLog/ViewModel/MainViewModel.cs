@@ -79,5 +79,17 @@ namespace SubLog.ViewModel
         {
             CurrentView = new SettingsViewModel();
         }
+
+        // ✅ 아래 블록 추가
+        [RelayCommand]
+        private void NavigateCategoryManagement()
+        {
+            // 두 Repository가 같은 DbContext를 공유
+            // → 카테고리 삭제 시 구독 업데이트와 일관성 유지
+            var ctx = new SubLogDbContext();
+            CurrentView = new CategoryManagementViewModel(
+                new CategoryRepository(ctx),
+                new SubscriptionRepository(ctx));
+        }
     }
 }

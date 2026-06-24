@@ -15,7 +15,9 @@ namespace SubLog.Model
         [MaxLength(50)] 
         public string Name { get; set; } = string.Empty;    // 카테고리명 (예: 영상, 음악, ...)
 
-        public string ColorHex { get; set; } = "4A90E2";     // UI 표시 색상
+        // ✅ '#' 포함한 표준 HEX 코드로 변경 (예: #3498DB)
+        // WPF BrushConverter가 '#' 접두사를 필요로 함
+        public string ColorHex { get; set; } = "#3498DB";     // UI 표시 색상
 
         // 이 카테고리에 속한 구독 목록 - EF Core가 자동으로 JOIN 처리해줌
         public List<Subscription> Subscriptions { get; set; } = new();

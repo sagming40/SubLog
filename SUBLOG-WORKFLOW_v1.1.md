@@ -635,17 +635,17 @@ namespace SubLog.Model
 
 ---
 
-## 🔵 EPIC 3. 고급 기능 구현
+## 🔁 EPIC 3. 고급 기능 구현 — 진행중
 
 > 💡 **이 EPIC의 목표**
 > 기본 CRUD를 넘어서는 고급 기능 추가. EPIC 3이 완료되면 포트폴리오에서 "실무 수준의 완성도"를 보여줄 수 있음.
 
-### ⏳ Task 3-1 · CategoryManagementView (카테고리 CRUD)
+### ✅ Task 3-1 · CategoryManagementView (카테고리 CRUD)
 
-- [ ]  `View/CategoryManagementView.xaml` 작성 (목록 + 추가/수정/삭제)
-- [ ]  `ViewModel/CategoryManagementViewModel.cs` 작성
-- [ ]  카테고리 색상 선택 기능 (색상 버튼 그룹 또는 TextBox로 HEX 직접 입력)
-- [ ]  카테고리 삭제 시 연결된 구독 처리 확인 (EF Core Cascade 또는 경고 메시지)
+- [x]  `View/CategoryManagementView.xaml` 작성 (목록 + 추가/수정/삭제)
+- [x]  `ViewModel/CategoryManagementViewModel.cs` 작성
+- [x]  카테고리 색상 선택 기능 (색상 버튼 그룹 또는 TextBox로 HEX 직접 입력)
+- [x]  카테고리 삭제 시 연결된 구독 처리 확인 (EF Core Cascade 또는 경고 메시지)
 
 ### ⏳ Task 3-2 · SettingsView (다크/라이트 테마 + 통화 단위)
 
@@ -877,9 +877,9 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 | 2-1 | MainWindow 레이아웃 (사이드바 네비게이션) | 핵심 화면 | 🔥 P1 | ✅ 완료 |
 | 2-2 | DashboardView (요약 카드 + 차트) | 핵심 화면 | 🔥 P1 | ✅ 완료 |
 | 2-3 | SubscriptionListView (DataGrid + 필터) | 핵심 화면 | 🔥 P1 | ✅ 완료 |
-| 2-4 | AddEditSubscriptionDialog (추가/수정 폼) | 핵심 화면 | 🔥 P1 | ⏳ 다음 |
-| 2-5 | 구독 카탈로그 (빠른 추가 프리셋) 🆕 | 핵심 화면 | 🔥 P1 | ⏳ 예정 |
-| 3-1 | CategoryManagementView | 고급 기능 | P1 | ⏳ 예정 |
+| 2-4 | AddEditSubscriptionDialog (추가/수정 폼) | 핵심 화면 | 🔥 P1 | ✅ 완료 |
+| 2-5 | 구독 카탈로그 (빠른 추가 프리셋) 🆕 | 핵심 화면 | 🔥 P1 | ✅ 완료 |
+| 3-1 | CategoryManagementView | 고급 기능 | P1 | ✅ 완료 |
 | 3-2 | SettingsView (테마 · 통화 단위) | 고급 기능 | P1 | ⏳ 예정 |
 | 3-3 | 결제일 알림 시스템 (D-Day 배지) | 고급 기능 | P2 | ⏳ 예정 |
 | 3-4 | 통계 분석 뷰 (월별 막대 차트) | 고급 기능 | P1 | ⏳ 예정 |
@@ -896,8 +896,8 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 >
 > 1. ✅ Task 1-1 ~ 1-6: 프로젝트 생성 + NuGet 설치 + DB 구축 → 완료
 > 2. ✅ Task 2-1 ~ 2-3: MainWindow + Dashboard + SubscriptionList → 완료
-> 3. ⏳ Task 2-4: AddEditSubscriptionDialog → 다음 작업
-> 4. ⏳ Task 2-5: 구독 카탈로그 → 2-4 직후 연결 구현
+> 3. ✅ Task 2-4: AddEditSubscriptionDialog → 다음 작업 → 완료
+> 4. ✅ Task 2-5: 구독 카탈로그 → 2-4 직후 연결 구현 → 완료
 > 5. ⏳ Task 3-5: 환율 API 연동 → 포트폴리오 최대 차별화 포인트 (면접 어필 핵심)
 
 ---
