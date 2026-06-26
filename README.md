@@ -166,10 +166,10 @@ Update-Database
 
 ## 📅 개발 로드맵
 
-- [x] **EPIC 1** — 프로젝트 기반 구축 (MVVM 폴더 구조, EF Core, Repository 패턴) ✅
-- [x] **EPIC 2** — 핵심 화면 개발 (Dashboard ✅ · SubscriptionList ✅ · AddEdit Dialog · 카탈로그) ✅
-- [ ] **EPIC 3** — 고급 기능 (결제일 알림, 통계 분석, 카테고리 관리 ✅, 환율 API) 🔁
-- [ ] **EPIC 4** — 완성도 향상 + 포트폴리오 배포 (MSIX 패키징, GIF 데모)
+- [x] **EPIC 1** — 프로젝트 기반 구축 (MVVM 폴더 구조✅, EF Core✅, Repository 패턴✅) ✅
+- [x] **EPIC 2** — 핵심 화면 개발 (Dashboard✅ · SubscriptionList✅ · AddEdit Dialog · 카탈로그✅)✅
+- [ ] **EPIC 3** — 고급 기능 (카테고리 관리✅, 다크/라이트 모드 테마 적용✅, 결제일 알림⏳, 통계 분석⏳, 환율 API⏳)🔁
+- [ ] **EPIC 4** — 완성도 향상 + 포트폴리오 배포 (MSIX 패키징⏳, GIF 데모⏳)⏳
 
 ---
 

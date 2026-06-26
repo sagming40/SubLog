@@ -77,7 +77,9 @@ namespace SubLog.ViewModel
         [RelayCommand]
         private void NavigateSettings()
         {
-            CurrentView = new SettingsViewModel();
+            // ✅ SettingsRepository와 함께 생성 (설정값 DB 저장/불러오기 가능)
+            var ctx = new SubLogDbContext();
+            CurrentView = new SettingsViewModel(new SettingsRepository(ctx));
         }
 
         // ✅ 아래 블록 추가

@@ -99,7 +99,9 @@
              CurrentView가 바뀌면 DataTemplate 규칙에 따라
              자동으로 맞는 View가 여기 표시됩니다
              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-        <ContentControl Grid.Column="1" Background="#F4F6F9"
-                        Content="{Binding CurrentView}"/>
+
+        <!-- ✅ <수정> "Task 3-2" (DynamicResource — 테마 파일 교체 시 자동 반응) -->
+        <ContentControl Grid.Column="1" Content="{Binding CurrentView}" 
+                        Background="{DynamicResource AppBackgroundBrush}"/>
     </Grid>
 </Window>

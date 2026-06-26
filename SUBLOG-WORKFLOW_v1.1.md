@@ -647,7 +647,7 @@ namespace SubLog.Model
 - [x]  카테고리 색상 선택 기능 (색상 버튼 그룹 또는 TextBox로 HEX 직접 입력)
 - [x]  카테고리 삭제 시 연결된 구독 처리 확인 (EF Core Cascade 또는 경고 메시지)
 
-### ⏳ Task 3-2 · SettingsView (다크/라이트 테마 + 통화 단위)
+### ✅ Task 3-2 · SettingsView (다크/라이트 테마 + 통화 단위)
 
 > 💡 **WPF 테마 전환 — ResourceDictionary 런타임 교체**
 > `App.xaml` 의 `ResourceDictionary` 를 런타임에 교체하는 방식으로 테마 전환 구현.
@@ -667,11 +667,11 @@ public static void ChangeTheme(bool isDark)
 }
 ```
 
-- [ ]  `Themes/LightTheme.xaml` 작성 (공통 색상 / 폰트 ResourceDictionary)
-- [ ]  `Themes/DarkTheme.xaml` 작성
-- [ ]  `View/SettingsView.xaml` 작성 (테마 토글 스위치, 통화 단위 콤보박스)
-- [ ]  `ViewModel/SettingsViewModel.cs` 작성
-- [ ]  설정값 SQLite에 저장/불러오기 (앱 재시작 후에도 유지)
+- [x]  `Themes/LightTheme.xaml` 작성 (공통 색상 / 폰트 ResourceDictionary)
+- [x]  `Themes/DarkTheme.xaml` 작성
+- [x]  `View/SettingsView.xaml` 작성 (테마 토글 스위치, 통화 단위 콤보박스)
+- [x]  `ViewModel/SettingsViewModel.cs` 작성
+- [x]  설정값 SQLite에 저장/불러오기 (앱 재시작 후에도 유지)
 
 ### ⏳ Task 3-3 · 결제일 알림 시스템 (D-Day 배지)
 
@@ -880,7 +880,7 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 | 2-4 | AddEditSubscriptionDialog (추가/수정 폼) | 핵심 화면 | 🔥 P1 | ✅ 완료 |
 | 2-5 | 구독 카탈로그 (빠른 추가 프리셋) 🆕 | 핵심 화면 | 🔥 P1 | ✅ 완료 |
 | 3-1 | CategoryManagementView | 고급 기능 | P1 | ✅ 완료 |
-| 3-2 | SettingsView (테마 · 통화 단위) | 고급 기능 | P1 | ⏳ 예정 |
+| 3-2 | SettingsView (테마 · 통화 단위) | 고급 기능 | P1 | ✅ 완료 |
 | 3-3 | 결제일 알림 시스템 (D-Day 배지) | 고급 기능 | P2 | ⏳ 예정 |
 | 3-4 | 통계 분석 뷰 (월별 막대 차트) | 고급 기능 | P1 | ⏳ 예정 |
 | 3-5 | 한국수출입은행 환율 API 연동 | 고급 기능 | 🔥 P1 | ⏳ 예정 |

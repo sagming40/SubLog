@@ -12,7 +12,8 @@ namespace SubLog.Data
     {
         // DbSet<T> 하나 = DB 테이블 하나
         public DbSet<Subscription> Subscriptions { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Category>     Categories    { get; set; }
+        public DbSet<AppSetting>   AppSettings   { get; set; } // ✅ Task 3-2 추가
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
