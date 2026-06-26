@@ -12,6 +12,7 @@ using SubLog.Model;
 using SubLog.Repository;
 using System.Collections.ObjectModel;
 using System.Windows;
+using SubLog.Extensions;    // ✅ CalcDaysUntilBilling() 사용을 위해 추가 (Task 3-3)
 
 namespace SubLog.ViewModel
 {
@@ -30,6 +31,10 @@ namespace SubLog.ViewModel
 
         [ObservableProperty]
         private int _upcomingBillingCount;      // 7일 내 결제 예정 → UpcomingBillingCount
+
+        // ✅ 추가: 7일 이내 결제 예정 구독 목록 (대시보드 목록 표시용)
+        [ObservableProperty]
+        private ObservableCollection<Subscription> _upcomingSubscriptions = new();
 
         // ══════════════════════════════════════════
         // LiveCharts2 도넛 차트 데이터
@@ -67,21 +72,16 @@ namespace SubLog.ViewModel
                     .Where(s => s.BillingCycle == BillingCycle.Monthly)
                     .Sum(s => s.Price);
 
-                // ㅡ 카드 3: 7일 이내 결제 예정 건수 ㅡ
-                var today = DateTime.Today;
-                UpcomingBillingCount = activeSubs.Count(s =>
-                {
-                    // 이번 달 말일을 넘는 결제일 보정 (예: 31일인데 2월인 경우)
-                    int daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
-                    int day = Math.Min(s.BillingDay, daysInMonth);
-                    var billingDate = new DateTime(today.Year, today.Month, day);
+                // ── 카드 3 & 결제 예정 목록: 확장 메서드로 D-Day 계산 ──
+                // 기존에 인라인으로 작성된 D-Day 계산을 확장 메서드로 교체
+                // → 코드 중복 제거, SubscriptionListView와 동일한 계산 로직 공유
+                var upcomingList = activeSubs
+                    .Where(s => s.CalcDaysUntilBilling() <= 7)
+                    .OrderBy(s => s.CalcDaysUntilBilling()) // D-Day 가까운 순 정렬
+                    .ToList();
 
-                    // 이미 지난 날짜 → 다음 달로 이동
-                    if (billingDate < today)
-                        billingDate = billingDate.AddMonths(1);
-
-                    return (billingDate - today).Days <= 7;
-                });
+                UpcomingBillingCount  = upcomingList.Count;
+                UpcomingSubscriptions = new ObservableCollection<Subscription>(upcomingList);
 
                 // ㅡ 도넛 차트: 카테고리 별 금액 합산 ㅡ
                 // GroupBy: 카테고리 이름으로 그룹 묶기

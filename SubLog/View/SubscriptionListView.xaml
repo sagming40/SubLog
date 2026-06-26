@@ -12,6 +12,13 @@
     <UserControl.Resources>
         <converters:BillingCycleConverter x:Key="BillingCycleConverter"/>
         <converters:BoolToStatusConverter x:Key="BoolToStatusConverter"/>
+        <converters:DaysToBadgeConverter  x:Key="DaysToBadgeConverter"/>
+        <converters:DaysToColorConverter  x:Key="DaysToColorConverter"/>
+        <!-- ✅ 추가 ㅡ 구독 목록 컬럼 헤더 정중앙 정렬
+            <Style x:Key="CenteredHeaderStyle" TargetType="DataGridColumnHeader">
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style> 
+        -->
     </UserControl.Resources>
 
     <!--
@@ -125,6 +132,8 @@
             <!-- 컬럼 헤더 스타일 -->
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
                     <Setter Property="Background"   Value="White"/>
                     <Setter Property="Foreground"   Value="#7F8C8D"/>
                     <Setter Property="FontWeight"   Value="SemiBold"/>
@@ -156,27 +165,87 @@
                 
                 <!-- 서비스명: Width="*" → 나머지 공간 전부 차지 -->
                 <DataGridTextColumn Header="서비스명" Binding="{Binding Name}" Width="*"/>
-                
+                <!-- ✅ 추가
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle> 
+                -->
+
                 <!-- 금액: StringFormat={}{0:N0} → "29,000원" 형식 -->
-                <DataGridTextColumn Header="금액" Width="120"
-                                    Binding="{Binding Price, StringFormat={}{0:N0}원}"/>
+                <DataGridTextColumn Header="금액" Width="120" Binding="{Binding Price, StringFormat={}{0:N0}원}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment"   Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 
                 <!-- 결제일: StringFormat{}{0}일 → "15일" 형식 -->
-                <DataGridTextColumn Header="결제일" Width="80"
-                                    Binding="{Binding BillingDay, StringFormat={}{0}일}"/>
+                <DataGridTextColumn Header="결제일" Width="80" Binding="{Binding BillingDay, StringFormat={}{0}일}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment"   Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 
                 <!-- 결제 주기: Converter로 Monthly → "월정액" 변환 -->
                 <DataGridTextColumn Header="결제 주기" Width="90"
                                     Binding="{Binding BillingCycle,
-                                              Converter={StaticResource BillingCycleConverter}}"/>
+                                              Converter={StaticResource BillingCycleConverter}}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment"   Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 
                 <!-- 카테고리: 네비게이션 속성 (EF Core가 Include로 함께 로드) -->
-                <DataGridTextColumn Header="카테고리" Width="110" Binding="{Binding Category.Name}"/>
+                <DataGridTextColumn Header="카테고리" Width="110" Binding="{Binding Category.Name}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment"   Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
 
                 <!-- 상태: Converter로 true → "✅ 활성" 변환 -->
                 <DataGridTextColumn Header="상태" Width="90"
                                     Binding="{Binding IsActive,
-                                              Converter={StaticResource BoolToStatusConverter}}"/>
+                                              Converter={StaticResource BoolToStatusConverter}}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment"   Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <!-- ✅ D-Day 배지 컬럼 추가 -->
+                <!--
+                    DataGridTemplateColumn: 셀 안에 자유롭게 XAML 구성 가능한 컬럼
+                    일반 텍스트 컬럼으로는 색상 배지 표현이 불가능하기 때문에 사용
+
+                    {Binding}: DataContext 자체(Subscription 객체 전체)를 컨버터에 전달
+                    → DaysToBadgeConverter / DaysToColorConverter 가 받아서 처리
+                -->
+                <DataGridTemplateColumn Header="결제 D-DAY" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border HorizontalAlignment="Center" Padding="8,3"
+                                    VerticalAlignment="Center" CornerRadius="4"
+                                    Background="{Binding Converter={StaticResource DaysToColorConverter}}">
+                                <TextBlock Foreground="White" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center"
+                                           Text="{Binding Converter={StaticResource DaysToBadgeConverter}, Mode=OneWay}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 

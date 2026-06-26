@@ -673,7 +673,7 @@ public static void ChangeTheme(bool isDark)
 - [x]  `ViewModel/SettingsViewModel.cs` 작성
 - [x]  설정값 SQLite에 저장/불러오기 (앱 재시작 후에도 유지)
 
-### ⏳ Task 3-3 · 결제일 알림 시스템 (D-Day 배지)
+### ✅ Task 3-3 · 결제일 알림 시스템 (D-Day 배지)
 
 > 💡 **알림 판단 로직**
 > 앱 시작 시 모든 구독의 `BillingDay` 와 오늘 날짜를 비교.
@@ -691,9 +691,9 @@ public static int CalcDaysUntilBilling(this Subscription sub)
 }
 ```
 
-- [ ]  `Subscription` 확장 메서드 또는 ViewModel 계산 속성으로 D-Day 계산
-- [ ]  DataGrid에 D-Day 열 추가 (7일 이내 → 빨간색 강조 표시)
-- [ ]  Dashboard에 "이번 달 결제 예정" 카드 표시
+- [x]  `Subscription` 확장 메서드 또는 ViewModel 계산 속성으로 D-Day 계산
+- [x]  DataGrid에 D-Day 열 추가 (7일 이내 → 빨간색 강조 표시)
+- [x]  Dashboard에 "이번 달 결제 예정" 카드 표시
 
 ### ⏳ Task 3-4 · 통계 분석 뷰 (월별 지출 막대 차트)
 
@@ -881,7 +881,7 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 | 2-5 | 구독 카탈로그 (빠른 추가 프리셋) 🆕 | 핵심 화면 | 🔥 P1 | ✅ 완료 |
 | 3-1 | CategoryManagementView | 고급 기능 | P1 | ✅ 완료 |
 | 3-2 | SettingsView (테마 · 통화 단위) | 고급 기능 | P1 | ✅ 완료 |
-| 3-3 | 결제일 알림 시스템 (D-Day 배지) | 고급 기능 | P2 | ⏳ 예정 |
+| 3-3 | 결제일 알림 시스템 (D-Day 배지) | 고급 기능 | P2 | ✅ 완료 |
 | 3-4 | 통계 분석 뷰 (월별 막대 차트) | 고급 기능 | P1 | ⏳ 예정 |
 | 3-5 | 한국수출입은행 환율 API 연동 | 고급 기능 | 🔥 P1 | ⏳ 예정 |
 | 4-1 | 스타일 & 비주얼 폴리쉬 | 완성 | P1 | ⏳ 예정 |
