@@ -27,10 +27,13 @@
         <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
             <view:SettingsView />
         </DataTemplate>
-
         <!-- ✅ 아래 줄 추가 -->
         <DataTemplate DataType="{x:Type vm:CategoryManagementViewModel}">
             <view:CategoryManagementView/>
+        </DataTemplate>
+        <!-- ✅ Task 3-4 추가 ㅡ 도넛/막대 차트 ViewModel -->
+        <DataTemplate DataType="{x:Type vm:StatisticsViewModel}">
+            <view:StatisticsView/>
         </DataTemplate>
     </Window.Resources>
 
@@ -80,6 +83,13 @@
                     <!-- ✅ 아래 버튼 추가 -->
                     <Button Content="🏷 카테고리" Padding="16,12" Margin="0,2"
                             Command="{Binding NavigateCategoryManagementCommand}"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent" Foreground="White"
+                            BorderThickness="0" FontSize="13" Cursor="Hand"/>
+
+                    <!-- ✅ Task 3-4 추가 ㅡ 📈 통계 분석 사이드바 버튼 -->
+                    <Button Content="📈 통계 분석" Padding="16,12" Margin="0,2"
+                            Command="{Binding NavigateStatisticsCommand}"
                             HorizontalContentAlignment="Left"
                             Background="Transparent" Foreground="White"
                             BorderThickness="0" FontSize="13" Cursor="Hand"/>

@@ -695,11 +695,11 @@ public static int CalcDaysUntilBilling(this Subscription sub)
 - [x]  DataGrid에 D-Day 열 추가 (7일 이내 → 빨간색 강조 표시)
 - [x]  Dashboard에 "이번 달 결제 예정" 카드 표시
 
-### ⏳ Task 3-4 · 통계 분석 뷰 (월별 지출 막대 차트)
+### ✅ Task 3-4 · 통계 분석 뷰 (월별 지출 막대 차트)
 
-- [ ]  `View/StatisticsView.xaml` 작성 (월별 막대 차트 + 카테고리별 도넛 차트)
-- [ ]  `ViewModel/StatisticsViewModel.cs` 작성
-- [ ]  월별 지출 집계 쿼리 (LINQ + EF Core)
+- [x]  `View/StatisticsView.xaml` 작성 (월별 막대 차트 + 카테고리별 도넛 차트)
+- [x]  `ViewModel/StatisticsViewModel.cs` 작성
+- [x]  월별 지출 집계 쿼리 (LINQ + EF Core)
 
 ### ⏳ Task 3-5 · 한국수출입은행 환율 API 연동 (달러 구독 원화 자동 환산)
 
@@ -882,7 +882,7 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 | 3-1 | CategoryManagementView | 고급 기능 | P1 | ✅ 완료 |
 | 3-2 | SettingsView (테마 · 통화 단위) | 고급 기능 | P1 | ✅ 완료 |
 | 3-3 | 결제일 알림 시스템 (D-Day 배지) | 고급 기능 | P2 | ✅ 완료 |
-| 3-4 | 통계 분석 뷰 (월별 막대 차트) | 고급 기능 | P1 | ⏳ 예정 |
+| 3-4 | 통계 분석 뷰 (월별 막대 차트) | 고급 기능 | P1 | ✅ 완료 |
 | 3-5 | 한국수출입은행 환율 API 연동 | 고급 기능 | 🔥 P1 | ⏳ 예정 |
 | 4-1 | 스타일 & 비주얼 폴리쉬 | 완성 | P1 | ⏳ 예정 |
 | 4-2 | 데이터 유효성 검사 & 예외 처리 | 완성 | P1 | ⏳ 예정 |
@@ -907,5 +907,50 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 > https://github.com/sagming40/SubLog
 
 ---
+
+## 메모(참고/오류 내용 노트)
+
+### [반복 발생 오류 패턴 — 꼭 기억할 것]
+
+  읽기 전용 속성 바인딩 오류
+  - { get; } 만 있는 속성(읽기 전용)에 바인딩할 때
+    Mode=OneWay를 반드시 붙여야 함.
+    안 붙이면 WPF가 TwoWay(기본값)로 시도하다가
+    "읽기 전용 속성에 쓸 수 없음" 오류로 앱이 강제 종료됨.
+  
+  발생 사례:
+  - SubscriptionListView: Subscriptions.Count → Mode=OneWay
+  - SettingsView: AppVersion → Mode=OneWay
+  - DashboardView: Run 태그 안 바인딩 → Mode=OneWay
+  
+  적용 규칙:
+  ViewModel에서 { get; } 만 있거나
+  [ObservableProperty] 없이 선언된 속성은
+  XAML 바인딩 시 항상 Mode=OneWay 붙이기
+
+### [Task 3-2 참고]
+
+- SettingsViewModel은 [ObservableProperty] 대신 수동 setter 사용
+  (이유: partial void OnChanged 타이밍 문제)
+- ApplyTheme은 static 메서드 (App.xaml.cs에서도 호출하기 위해)
+- Dispatcher.Invoke 필수 (백그라운드 스레드에서 UI 리소스 접근 불가)
+
+### [Task 3-3 참고]
+
+- D-Day 계산은 Extensions/SubscriptionExtensions.cs 확장 메서드로 중앙화
+- Converter에 {Binding} (객체 전체)을 넘기는 패턴 사용
+
+### [Task 3-5 참고]
+
+1~5월 막대 차트가 표시되지 않는 문제.
+ - 구독 시작일(StartDate)을 수정해도 DB에 저장되지 않는 버그가 원인.
+ - AddEditSubscriptionViewModel에서 필드명을 _startdate(소문자 d)로
+   선언했는데, CommunityToolkit은 이를 Startdate로 변환함.
+   XAML의 DatePicker는 {Binding StartDate}(대문자 D)로 연결되어 있어
+   바인딩이 조용히 실패하고 있었음.
+   ** 오류 메시지 없이 그냥 무시되는 WPF 바인딩의 특성상 발견이 어려웠음. **
+ - _startdate → _startDate로 수정하여 해결.
+   CommunityToolkit은 대문자를 단어 경계로 인식하므로
+   _startDate → StartDate로 올바르게 변환됨.
 
 *SubLog WORKFLOW v1.1 · 사공민규 · 최초 작성 2026.06.22 · 수정 2026.06.24*

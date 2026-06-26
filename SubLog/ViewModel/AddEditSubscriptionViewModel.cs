@@ -40,7 +40,7 @@ namespace SubLog.ViewModel
         private BillingCycle _selectedBillingCycle = BillingCycle.Monthly;    // 결제 주기
 
         [ObservableProperty]
-        private DateTime _startdate = DateTime.Today;   // 시작일
+        private DateTime _startDate = DateTime.Today;   // 시작일
 
         [ObservableProperty]
         private bool _IsActive = true;                  // 활성화 여부
@@ -93,7 +93,7 @@ namespace SubLog.ViewModel
                 Price = existing.Price;
                 BillingDay = existing.BillingDay;
                 SelectedBillingCycle = existing.BillingCycle;
-                Startdate = existing.StartDate;
+                StartDate = existing.StartDate;
                 IsActive = existing.IsActive;
                 Memo = existing.Memo;
 
@@ -127,7 +127,7 @@ namespace SubLog.ViewModel
                         Price = Price,
                         BillingDay = BillingDay,
                         BillingCycle = SelectedBillingCycle,
-                        StartDate = Startdate,
+                        StartDate = StartDate,
                         IsActive = IsActive,
                         Memo = Memo,
                         CategoryId = SelectedCategory!.Id
@@ -143,7 +143,7 @@ namespace SubLog.ViewModel
                         Price = Price,
                         BillingDay = BillingDay,
                         BillingCycle = SelectedBillingCycle,
-                        StartDate = Startdate,
+                        StartDate = StartDate,
                         IsActive = IsActive,
                         Memo = Memo,
                         CategoryId = SelectedCategory!.Id

@@ -93,5 +93,14 @@ namespace SubLog.ViewModel
                 new CategoryRepository(ctx),
                 new SubscriptionRepository(ctx));
         }
+
+        // ✅ Task 3-4 추가 (도넛/막대 차트)
+        [RelayCommand]
+        private void NavigateStatistics()
+        {
+            // StatisticsViewModel은 내부에서 직접 DB 접근
+            // → Repository 따로 전달 안 해도 됨
+            CurrentView = new StatisticsViewModel();
+        }
     }
 }
