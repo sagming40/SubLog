@@ -152,6 +152,27 @@ Update-Database
 
 ---
 
+### 🔑 API 키 설정
+한국수출입은행 Open API 환율 기능 사용을 위해 아래 설정이 필요합니다.
+
+1. [한국수출입은행 Open API](https://www.koreaexim.go.kr) 접속 → 현재환율 API 인증키 발급 (무료, 즉시 발급)
+2. `Services/Secrets.cs` 파일 생성 후 아래 내용 입력:
+
+```csharp
+namespace SubLog.Services
+{
+    internal static class Secrets
+    {
+        internal const string ExchangeRateApiKey = "YOUR_API_KEY_HERE";
+    }
+}
+```
+
+> ⚠️ `Secrets.cs`는 `.gitignore`에 등록되어 있어 GitHub에 업로드되지 않습니다.
+> API 키 없이 실행 시 마지막으로 캐싱된 환율 또는 기본값(₩1,530)이 사용됩니다. (2026년 6월 27일 기준)
+
+---
+
 ## 📸 스크린샷
 
 | 대시보드 | 구독 목록 |
@@ -168,7 +189,7 @@ Update-Database
 
 - [x] **EPIC 1** — 프로젝트 기반 구축 (MVVM 폴더 구조 ✅, EF Core✅, Repository 패턴✅) ✅
 - [x] **EPIC 2** — 핵심 화면 개발 (Dashboard ✅ · SubscriptionList ✅ · AddEdit Dialog · 카탈로그 ✅) ✅
-- [ ] **EPIC 3** — 고급 기능 (카테고리 관리 ✅, 다크/라이트 모드 테마 적용 ✅, 결제일 알림 ✅, 통계 분석✅, 환율 API⏳)🔁
+- [x] **EPIC 3** — 고급 기능 (카테고리 관리 ✅, 다크/라이트 모드 테마 적용 ✅, 결제일 알림 ✅, 통계 분석✅, 환율 API✅)✅
 - [ ] **EPIC 4** — 완성도 향상 + 포트폴리오 배포 (MSIX 패키징⏳, GIF 데모⏳)⏳
 
 ---

@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SubLog.Data;
 using SubLog.Repository;
+using SubLog.Services;
 
 namespace SubLog.ViewModel
 {
@@ -59,7 +60,11 @@ namespace SubLog.ViewModel
 
             // 대시보드 전용 새 DbContext + Repository 생성
             var ctx = new SubLogDbContext();
-            CurrentView = new DashboardViewModel(new SubscriptionRepository(ctx));
+            // ✅ Task 3-5 수정 ㅡ ExchangeRateService 추가
+            var settingsCtx = new SubLogDbContext();    // 별도 DbContext (충돌 방지)
+            CurrentView = new DashboardViewModel(
+                new SubscriptionRepository(ctx),
+                new ExchangeRateService(new SettingsRepository(settingsCtx)));  // ✅ Task 3-5 수정
         }
 
         [RelayCommand]
@@ -69,9 +74,12 @@ namespace SubLog.ViewModel
             
             // 구독목록 전용 새 DbContext + Repository 생성
             var ctx = new SubLogDbContext();
+            // ✅ Task 3-5 추가 ㅡ SettingsRepository → ExchangeRateService 순서로 생성
+            var settingsRepo = new SettingsRepository(ctx);
             CurrentView = new SubscriptionListViewModel(
                 new SubscriptionRepository(ctx),
-                new CategoryRepository(ctx));
+                new CategoryRepository(ctx),
+                new ExchangeRateService(settingsRepo)); // ✅ Task 3-5 추가 
         }
 
         [RelayCommand]

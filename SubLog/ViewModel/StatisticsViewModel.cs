@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using SkiaSharp;
 using SubLog.Data;
 using SubLog.Model;
+using SubLog.Repository;
+using SubLog.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,6 +23,10 @@ namespace SubLog.ViewModel
         // ═══════════════════
         // 요약 카드 바인딩 속성
         // ═══════════════════
+
+        // ✅ Task 3-5 추가 ㅡ 실시간 환율 로드 실패 시 환율 기본 값(2026.06.27 기준)
+        private decimal _exchangeRate = 1_530m; 
+
         [ObservableProperty]
         private decimal _totalMonthly;      // 이번달 총 지출
 
@@ -76,6 +82,10 @@ namespace SubLog.ViewModel
             // "using var" : 이 블록이 끝나면 DB 연결 자동 해제
             // 기존 CategoryManagementViewModel과 동일한 패턴
             using var context = new SubLogDbContext();
+            // ✅ Task 3-5 수정 ㅡ 환율 로드 (내부에서 직접 생성)
+            using var settingsCtx = new SubLogDbContext();
+            var exchangeService = new ExchangeRateService(new SettingsRepository(settingsCtx));
+            _exchangeRate = await exchangeService.GetUsdToKrwAsync();
 
             // 활성 구독 + 카테고리 정보를 한 번에 로드
             // Include = SQL의 JOIN과 같음 ("구독에 연결된 카테고리도 같이 가져와")
@@ -87,7 +97,10 @@ namespace SubLog.ViewModel
             // ─── 요약 카드 계산 ───
             TotalMonthly = subs
                 .Where(s => s.BillingCycle == BillingCycle.Monthly)
-                .Sum(s => s.Price);
+                // ✅ Task 3-5 수정 ㅡ 실시간 환율 반영
+                .Sum(s => s.CurrencyCode == "USD"
+                     ? Math.Round(s.Price * _exchangeRate)
+                     : s.Price);
 
             ActiveCount = subs.Count;
 
@@ -123,7 +136,10 @@ namespace SubLog.ViewModel
                 // StartDate <= 해당월 말일 이면 그 달에 이미 구독 중인 것
                 var total = subs
                     .Where(s => s.BillingCycle == BillingCycle.Monthly && s.StartDate <= lastDay)
-                    .Sum(s => s.Price);
+                    // ✅ Task 3-5 수정 ㅡ 막대 차트 실시간 환율 반영
+                    .Sum(s => s.CurrencyCode == "USD" 
+                         ? Math.Round(s.Price * _exchangeRate)
+                         : s.Price);
 
                 values.Add(total);
             }
@@ -192,7 +208,10 @@ namespace SubLog.ViewModel
                 .Select(g => new
                 {
                     Category = g.Key,
-                    Total = g.Sum(s => s.Price)
+                    // ✅ Task 3-5 수정 ㅡ 도넛 차트 실시간 환율 반영
+                    Total = g.Sum(s => s.CurrencyCode == "USD"
+                                     ? Math.Round(s.Price * _exchangeRate)
+                                     : s.Price)
                 })
                 .OrderByDescending(x => x.Total)    // 지출 많은 카테고리 먼저
                 .ToList();
@@ -200,7 +219,10 @@ namespace SubLog.ViewModel
             // 카테고리 없는 구독 따로 합산
             var uncategorized = subs
                 .Where(s => s.BillingCycle == BillingCycle.Monthly && s.Category == null)
-                .Sum(s => s.Price);
+                // ✅ Task 3-5 수정 ㅡ 실시간 환율 반영
+                .Sum(s => s.CurrencyCode == "USD"
+                     ? Math.Round(s.Price * _exchangeRate)
+                     : s.Price);
 
             DonutSeries.Clear();
 

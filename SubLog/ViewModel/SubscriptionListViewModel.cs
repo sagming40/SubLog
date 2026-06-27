@@ -11,6 +11,8 @@ using SubLog.Repository;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Documents;
+using SubLog.Services;
+using SubLog.Data;
 
 namespace SubLog.ViewModel
 {
@@ -43,13 +45,17 @@ namespace SubLog.ViewModel
 
         private readonly ISubscriptionRepository _subscriptionRepo;
         private readonly ICategoryRepository _categoryRepo;
+        private readonly ExchangeRateService _exchangeService; // ✅ Task 3-5 추가
+        private decimal _exchangeRate = 1_530m;                // ✅ Task 3-5 추가 
 
         public SubscriptionListViewModel(
             ISubscriptionRepository subscriptionRepo,
-            ICategoryRepository categoryRepo)
+            ICategoryRepository categoryRepo,
+            ExchangeRateService exchangeService)   // ✅ Task 3-5 추가
         {
             _subscriptionRepo = subscriptionRepo;
             _categoryRepo = categoryRepo;
+            _exchangeService = exchangeService;    // ✅ Task 3-5 추가
             _ = LoadDataAsync();
         }
 
@@ -68,6 +74,8 @@ namespace SubLog.ViewModel
         {
             try // ← 이 줄 추가
             {
+                // ✅ Task 3-5 추가 ㅡ 환율 먼저 로드 (API 또는 캐시에서)
+                _exchangeRate = await _exchangeService.GetUsdToKrwAsync();
                 // Repository.GetAllAsync()는 EPIC 1에서 만든 메서드
                 // .Include (s => s.Category)가 있어야 Category.Name이 표시됨
                 _allSubscriptions = (await _subscriptionRepo.GetAllAsync()).ToList();
@@ -98,8 +106,18 @@ namespace SubLog.ViewModel
             if (ShowActiveOnly)
                 filtered = filtered.Where(s => s.IsActive);
 
+            var result = filtered.ToList(); // ✅ Task 3-5 추가
+
+            // ✅ Task 3-5 추가 ㅡ 각 구독의 원화 환산 금액 계산
+            foreach (var sub in result)
+            {
+                sub.KrwEquivalent = sub.CurrencyCode == "USD"
+                    ? Math.Round(sub.Price * _exchangeRate) // USD → 환율 곱하기
+                    : sub.Price;                            // KRW → 그대로
+            }
+
             // 결과를 ObservableCollection으로 변환하여 DataGrid에 반영
-            Subscriptions = new ObservableCollection<Subscription>(filtered);
+            Subscriptions = new ObservableCollection<Subscription>(result);
         }
 
         // ══════════════════════════════════════════════════════
@@ -125,6 +143,12 @@ namespace SubLog.ViewModel
 
             // 추가 모드 ViewModel 생성 (existing 안 넘김)
             var dialogVm = new AddEditSubscriptionViewModel(_subscriptionRepo, categories);
+
+            // ✅ Task 3-5 추가 ㅡ 기본 통화 적용
+            using var settingsCtx = new SubLogDbContext();
+            var defaultCurrency   = await new SettingsRepository(settingsCtx)
+                                    .GetAsync("DefaultCurrency") ?? "KRW";
+            dialogVm.CurrencyCode = defaultCurrency;
 
             // 다이얼로그 생성 후 모달로 표시
             var dialog = new AddEditSubscriptionDialog(dialogVm)
@@ -169,10 +193,11 @@ namespace SubLog.ViewModel
             var dialogVm = new AddEditSubscriptionViewModel(_subscriptionRepo, categories);
 
             // 카탈로그에서 선택한 값을 입력칸에 미리 채워넣기
-            dialogVm.Name = catalogItem.Name;
-            dialogVm.Price = catalogItem.Price;
+            dialogVm.Name                 = catalogItem.Name;
+            dialogVm.Price                = catalogItem.Price;
             dialogVm.SelectedBillingCycle = catalogItem.Cycle;
-            dialogVm.SelectedCategory = matchedCategory;
+            dialogVm.SelectedCategory     = matchedCategory;
+            dialogVm.CurrencyCode         = catalogItem.CurrencyCode; // ✅ Task 3-5 추가
 
             var dialog = new AddEditSubscriptionDialog(dialogVm)
             {

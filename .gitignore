@@ -402,3 +402,6 @@ FodyWeavers.xsd
 
 *.db-shm
 *.db-wal
+
+# API 키 보안 — 절대 GitHub에 올리지 말 것
+**/Services/Secrets.cs

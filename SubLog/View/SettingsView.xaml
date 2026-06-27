@@ -58,9 +58,12 @@
                     <StackPanel DockPanel.Dock="Left">
                         <TextBlock Text="기본 통화 단위" FontSize="14" 
                                    Foreground="{DynamicResource PrimaryTextBrush}"/>
-                        <TextBlock Text="새 구독 추가 시 기본으로 선택되는 통화입니다. (Task 3-5 환율 기능에서 사용)"
-                                   Foreground="{DynamicResource SecondaryTextBrush}"
-                                   FontSize="12" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                        <TextBlock Foreground="{DynamicResource SecondaryTextBrush}"
+                                   FontSize="12" TextWrapping="Wrap" Margin="0,3,0,0">
+                            <Run Text="새 구독 추가 시 기본으로 선택되는 통화입니다."/>
+                            <LineBreak/>
+                            <Run Text="구독 추가 버튼 클릭 시 바로 반영됩니다."/>
+                        </TextBlock>
                     </StackPanel>
 
                     <ComboBox DockPanel.Dock="Right" Width="120" Margin="16,0,0,0"

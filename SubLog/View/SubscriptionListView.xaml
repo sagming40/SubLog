@@ -174,14 +174,31 @@
                 -->
 
                 <!-- 금액: StringFormat={}{0:N0} → "29,000원" 형식 -->
-                <DataGridTextColumn Header="금액" Width="120" Binding="{Binding Price, StringFormat={}{0:N0}원}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                            <Setter Property="VerticalAlignment"   Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="금액" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <!-- KRW 기본값 -->
+                                        <Setter Property="Text"
+                                                Value="{Binding Price, StringFormat={}{0:N0}원}"/>
+                                        <Style.Triggers>
+                                            <!-- USD이면 달러 표시 -->
+                                            <DataTrigger Binding="{Binding CurrencyCode}" Value="USD">
+                                                <Setter Property="Text">
+                                                    <Setter.Value>
+                                                        <Binding Path="Price" StringFormat="$#,##0.##"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 
                 <!-- 결제일: StringFormat{}{0}일 → "15일" 형식 -->
                 <DataGridTextColumn Header="결제일" Width="80" Binding="{Binding BillingDay, StringFormat={}{0}일}">
@@ -226,6 +243,30 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
+
+                <!-- ✅ Task 3-5 추가 ㅡ 통화/원화 환산 금액 열 -->
+                <!-- 통화 열 -->
+                <DataGridTextColumn Header="통화" Width="60" Binding="{Binding CurrencyCode}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment"   Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- 원화 환산 금액 열 -->
+                <DataGridTextColumn Header="원화 금액" Width="120"
+                                    Binding="{Binding KrwEquivalent, StringFormat={}{0:N0}원}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment"   Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                
                 <!-- ✅ D-Day 배지 컬럼 추가 -->
                 <!--
                     DataGridTemplateColumn: 셀 안에 자유롭게 XAML 구성 가능한 컬럼

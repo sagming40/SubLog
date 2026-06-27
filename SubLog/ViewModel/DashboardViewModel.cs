@@ -12,7 +12,10 @@ using SubLog.Model;
 using SubLog.Repository;
 using System.Collections.ObjectModel;
 using System.Windows;
-using SubLog.Extensions;    // ✅ CalcDaysUntilBilling() 사용을 위해 추가 (Task 3-3)
+using SubLog.Extensions;
+// ✅ CalcDaysUntilBilling() 사용을 위해 추가 (Task 3-3)
+// ✅ ExchangeRateService 사용을 위해 추가 (Task 3-5)
+using SubLog.Services;
 
 namespace SubLog.ViewModel
 {
@@ -43,11 +46,15 @@ namespace SubLog.ViewModel
         public ObservableCollection<ISeries> DonutSeries { get; } = new();
 
         private readonly ISubscriptionRepository _repo;
+        private readonly ExchangeRateService     _exchangeService;  // ✅ Task 3-5 추가
+        private decimal  _exchangeRate           = 1_530m;          // ✅ Task 3-5 추가
 
         // MainViewModel에서 _subscriptionRepo를 넘겨받아 보관
-        public DashboardViewModel(ISubscriptionRepository repo)
+        public DashboardViewModel(ISubscriptionRepository repo, 
+                                  ExchangeRateService exchangeService)  // ✅ Task 3-5 추가
         {
-            _repo = repo;
+            _repo            = repo;
+            _exchangeService = exchangeService; // ✅ Task 3-5 추가
             // 생성자에서 await 직접 사용 불가 → 이 패턴으로 비동기 호출
             // _: "반환값은 필요 없다"는 C# 관용 표현
             _ = LoadDataAsync();
@@ -58,6 +65,8 @@ namespace SubLog.ViewModel
         {
             try
             {
+                // ✅ Task 3-5 추가 ㅡ 환율 먼저 로드
+                _exchangeRate = await _exchangeService.GetUsdToKrwAsync();
                 // EPIC 1에서 만든 Repository를 통해 DB에서 전체 구독 조회
                 var subs = await _repo.GetAllAsync();
 
@@ -70,7 +79,10 @@ namespace SubLog.ViewModel
                 // ㅡ 카드 2: 월 지출 합계 (월 정액 구독만 합산) ㅡ
                 TotalMonthlySpend = activeSubs
                     .Where(s => s.BillingCycle == BillingCycle.Monthly)
-                    .Sum(s => s.Price);
+                    // ✅ Task 3-5 수정 ㅡ USD 구독은 환율 곱해서 합산
+                    .Sum(s => s.CurrencyCode == "USD"
+                         ? Math.Round(s.Price * _exchangeRate)  // USD → 환율 적용 
+                         : s.Price);                            // KRW → 그대로
 
                 // ── 카드 3 & 결제 예정 목록: 확장 메서드로 D-Day 계산 ──
                 // 기존에 인라인으로 작성된 D-Day 계산을 확장 메서드로 교체
@@ -89,7 +101,13 @@ namespace SubLog.ViewModel
                 // OrderByDescending: 금액 큰 순으로 정렬
                 var groups = activeSubs
                     .GroupBy(s => s.Category?.Name ?? "미분류")
-                    .Select(g => new { Name = g.Key, Total = g.Sum(s => s.Price) })
+                    .Select(g => new
+                    {
+                        Name  = g.Key,
+                        Total = g.Sum(s => s.CurrencyCode == "USD"
+                                      ? Math.Round(s.Price * _exchangeRate)
+                                      : s.Price)
+                    })
                     .OrderByDescending(x => x.Total)
                     .ToList();
 

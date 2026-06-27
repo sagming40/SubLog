@@ -77,7 +77,7 @@ SubLog/
 
 ---
 
-## ✅ EPIC 1. 프로젝트 기반 구축 — 완료
+## ✅ EPIC 1. 프로젝트 기반 구축 — 완료 ✅
 
 > 💡 **이 EPIC의 목표**
 > 개발을 본격적으로 시작하기 위한 기반 다지기. EPIC 1이 완료되면 DB 연결과 데이터 저장이 가능한 뼈대가 완성됨.
@@ -394,7 +394,7 @@ namespace SubLog.Repository
 
 ---
 
-## ✅ EPIC 2. 핵심 화면 개발 — 완료
+## ✅ EPIC 2. 핵심 화면 개발 — 완료 ✅
 
 > 💡 **이 EPIC의 목표**
 > 앱의 핵심 화면 5개 개발. EPIC 2가 완료되면 구독 추가/조회/수정/삭제(CRUD) + 카탈로그 빠른 추가가 완전히 동작하는 앱 완성.
@@ -635,7 +635,7 @@ namespace SubLog.Model
 
 ---
 
-## 🔁 EPIC 3. 고급 기능 구현 — 진행중
+## ✅ EPIC 3. 고급 기능 구현 — 완료 ✅
 
 > 💡 **이 EPIC의 목표**
 > 기본 CRUD를 넘어서는 고급 기능 추가. EPIC 3이 완료되면 포트폴리오에서 "실무 수준의 완성도"를 보여줄 수 있음.
@@ -701,7 +701,7 @@ public static int CalcDaysUntilBilling(this Subscription sub)
 - [x]  `ViewModel/StatisticsViewModel.cs` 작성
 - [x]  월별 지출 집계 쿼리 (LINQ + EF Core)
 
-### ⏳ Task 3-5 · 한국수출입은행 환율 API 연동 (달러 구독 원화 자동 환산)
+### ✅ Task 3-5 · 한국수출입은행 환율 API 연동 (달러 구독 원화 자동 환산)
 
 > 💡 **이 Task를 추가한 이유 — 포트폴리오 핵심 차별화 포인트**
 > Netflix($15.99), Adobe($54.99) 등 달러 구독 서비스를 원화로 자동 환산.
@@ -784,19 +784,19 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 
 관련 파일: `Services/ExchangeRateService.cs`, `Repository/ISettingsRepository.cs`, `Repository/SettingsRepository.cs`
 
-- [ ]  한국수출입은행 Open API 키 발급 (https://www.koreaexim.go.kr)
-- [ ]  `Services/` 폴더 생성 → `Services/ExchangeRateService.cs` 작성
-- [ ]  `ExchangeRateDto` record 정의 (JSON 매핑)
-- [ ]  환율 캐싱 로직 (SQLite Settings 테이블에 마지막 환율 + 날짜 저장)
-- [ ]  오프라인 Fallback 처리 구현
-- [ ]  `Subscription.cs` 에 `CurrencyCode` 속성 추가 (`"KRW"` / `"USD"` 구분)
-- [ ]  구독 목록에 원화 환산 금액 열 추가 (달러 구독에만 표시)
-- [ ]  Dashboard 월 지출 합계 계산 시 환율 반영
-- [ ]  **✅ EPIC 3 완료 → GitHub Desktop으로 커밋 Push**
+- [x]  한국수출입은행 Open API 키 발급 (https://www.koreaexim.go.kr)
+- [x]  `Services/` 폴더 생성 → `Services/ExchangeRateService.cs` 작성
+- [x]  `ExchangeRateDto` record 정의 (JSON 매핑)
+- [x]  환율 캐싱 로직 (SQLite Settings 테이블에 마지막 환율 + 날짜 저장)
+- [x]  오프라인 Fallback 처리 구현
+- [x]  `Subscription.cs` 에 `CurrencyCode` 속성 추가 (`"KRW"` / `"USD"` 구분)
+- [x]  구독 목록에 원화 환산 금액 열 추가 (달러 구독에만 표시)
+- [x]  Dashboard 월 지출 합계 계산 시 환율 반영
+- [x]  **✅ EPIC 3 완료 → GitHub Desktop으로 커밋 Push**
 
 ---
 
-## 🔵 EPIC 4. 완성 & 포트폴리오
+## ⏳ EPIC 4. 완성 & 포트폴리오
 
 > 💡 **이 EPIC의 목표**
 > "작동하는 앱" → "보여주고 싶은 앱"으로 업그레이드. 포트폴리오 제출 준비 완료.
@@ -883,7 +883,7 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 | 3-2 | SettingsView (테마 · 통화 단위) | 고급 기능 | P1 | ✅ 완료 |
 | 3-3 | 결제일 알림 시스템 (D-Day 배지) | 고급 기능 | P2 | ✅ 완료 |
 | 3-4 | 통계 분석 뷰 (월별 막대 차트) | 고급 기능 | P1 | ✅ 완료 |
-| 3-5 | 한국수출입은행 환율 API 연동 | 고급 기능 | 🔥 P1 | ⏳ 예정 |
+| 3-5 | 한국수출입은행 환율 API 연동 | 고급 기능 | 🔥 P1 | ✅ 완료 |
 | 4-1 | 스타일 & 비주얼 폴리쉬 | 완성 | P1 | ⏳ 예정 |
 | 4-2 | 데이터 유효성 검사 & 예외 처리 | 완성 | P1 | ⏳ 예정 |
 | 4-3 | MSIX 패키징 | 완성 | P2 | ⏳ 예정 |
@@ -940,7 +940,7 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 - D-Day 계산은 Extensions/SubscriptionExtensions.cs 확장 메서드로 중앙화
 - Converter에 {Binding} (객체 전체)을 넘기는 패턴 사용
 
-### [Task 3-5 참고]
+### ### [Task 3-5 핵심 패턴 및 교훈]
 
 1~5월 막대 차트가 표시되지 않는 문제.
  - 구독 시작일(StartDate)을 수정해도 DB에 저장되지 않는 버그가 원인.
@@ -952,5 +952,54 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
  - _startdate → _startDate로 수정하여 해결.
    CommunityToolkit은 대문자를 단어 경계로 인식하므로
    _startDate → StartDate로 올바르게 변환됨.
+
+HttpClient static readonly 패턴
+  - HttpClient는 매번 new로 생성하면 소켓 자원 고갈 위험
+  - static readonly로 선언해 앱 전체에서 단 하나만 유지
+  - private static readonly HttpClient _http = new();
+
+record 타입 — JSON 매핑용
+  - class보다 가볍고 한 줄로 여러 속성 선언 가능
+  - [property: JsonPropertyName("키이름")] 으로 JSON 키와 C# 속성 연결
+  - JsonSerializerOptions { PropertyNameCaseInsensitive = true } 추가 권장
+
+decimal.TryParse — 쉼표 제거 필수
+  - API 응답이 "1,545.3" 형태로 옴 (쉼표 포함 문자열)
+  - 그대로 TryParse 하면 실패 → Replace(",", "") 먼저 처리
+
+try-catch Fallback 패턴
+  - 외부 API는 언제든 실패할 수 있음
+  - 1순위: API 호출 성공 → 최신 환율 반환 + DB 캐시 저장
+  - 2순위: API 실패 → DB에 저장된 마지막 환율 사용
+  - 3순위: DB에도 없음 → 기본값(1,530m) 반환
+  - catch 블록을 비워두는 게 의도적 무시임을 주석으로 명시
+
+주말 날짜 처리 — DateTime.Today 대신 targetDate 사용
+  - 한국수출입은행 API는 영업일(평일)에만 데이터 제공
+  - 토요일 → 금요일(-1일), 일요일 → 금요일(-2일) 조정 필수
+  - 조정된 날짜를 targetDate에 저장 후 반드시 targetDate.ToString() 사용
+  - DateTime.Today.ToString() 그대로 쓰면 조정이 무효화되는 버그 발생
+
+[NotMapped] — DB 저장 제외 속성
+  - EF Core에 "이 속성은 DB 컬럼 아님"을 알리는 어노테이션
+  - ViewModel이 계산 후 채워주는 임시 속성에 사용
+  - 예: KrwEquivalent (원화 환산 금액) — DB 저장 불필요, 매번 계산
+
+DataTrigger로 조건부 텍스트 표시
+  - USD/KRW에 따라 다른 포맷 표시 시 Converter 대신 DataTrigger 활용
+  - StringFormat="$#,##0.##" 방식으로 달러 기호 포함 포맷
+  - Setter.Value를 풀어쓰는 방식으로 중괄호 이스케이프 문제 회피
+
+API 키 보안 처리
+  - API 키는 절대 코드에 하드코딩 후 GitHub Push 금지
+  - Services/Secrets.cs 별도 파일로 분리
+  - .gitignore에 **/Services/Secrets.cs 추가로 GitHub 업로드 차단
+  - README.md에 Secrets.cs 생성 방법 안내 추가
+
+환율 API 도메인 변경 이력 (2025.6.25)
+  - 구버전: www.koreaexim.go.kr
+  - 신버전: oapi.koreaexim.go.kr
+  - 일일 호출 가능 횟수: 1,000회 제한 (앱 시작 시 1회 호출로 최소화)
+  - 주말/공휴일: 빈 배열([]) 반환 → 직전 영업일 날짜로 재요청 필요
 
 *SubLog WORKFLOW v1.1 · 사공민규 · 최초 작성 2026.06.22 · 수정 2026.06.24*

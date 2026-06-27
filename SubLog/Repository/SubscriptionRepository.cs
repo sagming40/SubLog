@@ -58,6 +58,7 @@ namespace SubLog.Repository
             existing.IsActive       = subscription.IsActive;
             existing.Memo           = subscription.Memo;
             existing.CategoryId     = subscription.CategoryId;
+            existing.CurrencyCode   = subscription.CurrencyCode; // ✅ Task 3-5 추가
 
             await _context.SaveChangesAsync();
         }

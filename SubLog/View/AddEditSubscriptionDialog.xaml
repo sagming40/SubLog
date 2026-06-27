@@ -42,6 +42,13 @@
                       SelectedItem="{Binding SelectedBillingCycle}"
                       Height="38" Margin="0,0,0,16"/>
 
+            <!-- ✅ Task 3-5 추가 ㅡ 통화 선택 -->
+            <TextBlock Text="통화" Margin="0,0,0,6" FontSize="13"
+                       FontWeight="SemiBold" Foreground="#34495E"/>
+            <ComboBox ItemsSource="{Binding CurrencyCodes}" Height="38"
+                      SelectedItem="{Binding CurrencyCode}" FontSize="14"
+                      VerticalContentAlignment="Center" Margin="0,0,0,16"/>
+
             <!-- ─── 결제일 ─── -->
             <TextBlock Text="결제일 (1일 ~ 31일)" Margin="0,0,0,6" FontSize="13"
                        FontWeight="SemiBold" Foreground="#34495E"/>

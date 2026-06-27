@@ -48,6 +48,10 @@ namespace SubLog.ViewModel
         [ObservableProperty]
         private string? _memo;                          // 메모
 
+        // ✅ Task 3-5 추가
+        [ObservableProperty]
+        private string _currencyCode = "KRW";           // 통화 ("KRW" / "USD")
+
         // 다이얼로그 제목 (추가/수정에 따라 다름)
         [ObservableProperty]
         private string _dialogTitle = "구독 추가";
@@ -56,6 +60,7 @@ namespace SubLog.ViewModel
         public ObservableCollection<Category> Categories { get; } = new();
 
         // 결제 주기 선택지 (enum 전체를 배열로)
+        public string[] CurrencyCodes { get; } = { "KRW", "USD" }; // ✅ Task 3-5 추가
         public BillingCycle[] BillingCycles { get; } =
             { BillingCycle.Weekly, BillingCycle.Monthly, BillingCycle.Yearly };
 
@@ -89,13 +94,14 @@ namespace SubLog.ViewModel
                 DialogTitle = "구독 수정";
                 _editingId = existing!.Id;
 
-                Name = existing.Name;
-                Price = existing.Price;
-                BillingDay = existing.BillingDay;
+                Name                 = existing.Name;
+                Price                = existing.Price;
+                BillingDay           = existing.BillingDay;
                 SelectedBillingCycle = existing.BillingCycle;
-                StartDate = existing.StartDate;
-                IsActive = existing.IsActive;
-                Memo = existing.Memo;
+                StartDate            = existing.StartDate;
+                IsActive             = existing.IsActive;
+                Memo                 = existing.Memo;
+                CurrencyCode         = existing.CurrencyCode; // ✅ Task 3-5 추가
 
                 // 카테고리: Id로 목록에서 찾아 선택
                 SelectedCategory = Categories.FirstOrDefault(c => c.Id == existing.CategoryId);
@@ -122,15 +128,16 @@ namespace SubLog.ViewModel
                     // 수정: 기존 객체를 다시 만들어 Id 유지한 채 업데이트
                     var sub = new Subscription
                     {
-                        Id = _editingId,
-                        Name = Name.Trim(),
-                        Price = Price,
-                        BillingDay = BillingDay,
+                        Id           = _editingId,
+                        Name         = Name.Trim(),
+                        Price        = Price,
+                        BillingDay   = BillingDay,
                         BillingCycle = SelectedBillingCycle,
-                        StartDate = StartDate,
-                        IsActive = IsActive,
-                        Memo = Memo,
-                        CategoryId = SelectedCategory!.Id
+                        StartDate    = StartDate,
+                        IsActive     = IsActive,
+                        Memo         = Memo,
+                        CategoryId   = SelectedCategory!.Id,
+                        CurrencyCode = CurrencyCode // ✅ Task 3-5 추가
                     };
                     await _repo.UpdateAsync(sub);
                 }
@@ -139,14 +146,15 @@ namespace SubLog.ViewModel
                     // 추가: Id 없이 새로 생성 (EF Core가 자동부여)
                     var sub = new Subscription
                     {
-                        Name = Name.Trim(),
-                        Price = Price,
-                        BillingDay = BillingDay,
+                        Name         = Name.Trim(),
+                        Price        = Price,
+                        BillingDay   = BillingDay,
                         BillingCycle = SelectedBillingCycle,
-                        StartDate = StartDate,
-                        IsActive = IsActive,
-                        Memo = Memo,
-                        CategoryId = SelectedCategory!.Id
+                        StartDate    = StartDate,
+                        IsActive     = IsActive,
+                        Memo         = Memo,
+                        CategoryId   = SelectedCategory!.Id,
+                        CurrencyCode = CurrencyCode // ✅ Task 3-5 추가
                     };
                     await _repo.AddAsync(sub);
                 }

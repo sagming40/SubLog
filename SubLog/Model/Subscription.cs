@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SubLog.Model
 {
@@ -28,6 +29,12 @@ namespace SubLog.Model
         public DateTime StartDate { get; set; }             // 구독 시작일
 
         public bool IsActive { get; set; }                  // 구독 활성화 여부
+
+        // ✅ Task 3-5 추가
+        // [NotMapped] = EF Core에게 "이건 DB 컬럼 아니야" 알려주는 표시
+        // DB에 저장 안 함 — ViewModel이 환율 계산 후 채워주는 임시 속성
+        [NotMapped]
+        public decimal KrwEquivalent { get; set; }
 
         [MaxLength(500)]
         public string? Memo { get; set; }                   // 메모 (없어도 됨, ? = nullable)
