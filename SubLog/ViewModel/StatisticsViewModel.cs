@@ -217,12 +217,16 @@ namespace SubLog.ViewModel
                 .ToList();
 
             // 카테고리 없는 구독 따로 합산
-            var uncategorized = subs
+            // ✅ Task 4-1 수정 — 비율 계산용 전체 합계
+            var uncategorizedTemp = subs // ✅ Task 4-1 수정 
                 .Where(s => s.BillingCycle == BillingCycle.Monthly && s.Category == null)
                 // ✅ Task 3-5 수정 ㅡ 실시간 환율 반영
                 .Sum(s => s.CurrencyCode == "USD"
                      ? Math.Round(s.Price * _exchangeRate)
                      : s.Price);
+            var totalSum = grouped.Sum(g => g.Total) + uncategorizedTemp; // ✅ Task 4-1 추가
+
+            var uncategorized = uncategorizedTemp; // ✅ Task 4-1 수정
 
             DonutSeries.Clear();
 
@@ -244,9 +248,21 @@ namespace SubLog.ViewModel
                     InnerRadius = 60,
 
                     // 조각 위 텍스트 색상 / 위치
-                    DataLabelsPaint = new SolidColorPaint(SKColors.White),
-                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
-                    DataLabelsFormatter = pt => $"₩{pt.Coordinate.PrimaryValue:N0}"
+                    DataLabelsPaint = new SolidColorPaint(SKColor.Parse("#333333")),
+
+                    // ✅ Task 4-1 수정 — Middle → Outer (조각 바깥으로)
+                    DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Outer,
+
+                    // ✅ Task 4-1 추가 — 레이블 크기
+                    DataLabelsSize = 11,
+
+                    // ✅ Task 4-1 수정 — 8% 미만 조각은 레이블 숨김
+                    DataLabelsFormatter = pt =>
+                    {
+                        var value = pt.Coordinate.PrimaryValue;
+                        return totalSum == 0 || (double)value / (double)totalSum < 0.01
+                        ? "" : $"₩{value:N0}";
+                    }
                 });
             }
 

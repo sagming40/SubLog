@@ -96,7 +96,7 @@
                         InitialRotation="-90" : 12시 방향부터 시작
                         LegendPosition="Right" : 오른쪽에 범례
                     -->
-                    <lvc:PieChart Series="{Binding DonutSeries}" Height="300"
+                    <lvc:PieChart Series="{Binding DonutSeries}" Height="400"
                                   InitialRotation="-90" LegendPosition="Right" IsClockwise="True"/>
                 </StackPanel>
             </Border>

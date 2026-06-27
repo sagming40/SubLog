@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:SubLog.Converters"
-             mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="900">
+             mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="900"
+             PreviewMouseLeftButtonDown="UserControl_PreviewMouseLeftButtonDown">
 
     <!--
         UserControl.Resources: 이 화면 안에서만 쓸 컨버터를 등록
@@ -26,10 +26,11 @@
              ══════════════════════════════════ -->
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
             
-            <TextBlock Text="🏷 카테고리 관리" Foreground="#2C3E50" FontSize="22" FontWeight="Bold"/>
+            <TextBlock Text="🏷 카테고리 관리" FontSize="22" FontWeight="Bold"
+                       Foreground="{DynamicResource PrimaryTextBrush}"/>
 
-            <TextBlock Text="구독 서비스를 분류할 카테고리를 추가하고 관리합니다."
-                       FontSize="13" Foreground="#7F8C8D" Margin="0,4,0,0"/>
+            <TextBlock Text="구독 서비스를 분류할 카테고리를 추가하고 관리합니다." FontSize="13" 
+                       Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,4,0,0"/>
 
         </StackPanel>
 
@@ -46,13 +47,14 @@
             </Grid.ColumnDefinitions>
 
             <!-- ── 좌측: 카테고리 목록 DataGrid ── -->
-            <DataGrid Grid.Column="0" ItemsSource="{Binding Categories}"
-                      SelectedItem="{Binding SelectedCategory}" RowHeight="46"
-                      AutoGenerateColumns="False" IsReadOnly="True"
-                      SelectionMode="Single" CanUserAddRows="False"
-                      CanUserDeleteRows="False" CanUserReorderColumns="False"
-                      HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                      BorderBrush="#E0E0E0" BorderThickness="1">
+            <DataGrid x:Name="CategoryDataGrid" Grid.Column="0" 
+                      SelectedItem="{Binding SelectedCategory}"
+                      IsReadOnly="True" ItemsSource="{Binding Categories}"
+                      CanUserReorderColumns="False"
+                      Style="{StaticResource SubLogDataGrid}"
+                      RowStyle="{StaticResource SubLogDataGridRow}"
+                      CellStyle="{StaticResource SubLogDataGridCell}"
+                      ColumnHeaderStyle="{StaticResource SubLogDataGridHeader}">
 
                 <DataGrid.Columns>
 
@@ -79,8 +81,9 @@
                     <DataGridTextColumn Header="카테고리 이름" Binding="{Binding Name}" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="FontSize"          Value="13"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment"   Value="Center"/>
+                                <Setter Property="FontSize"            Value="13"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -89,9 +92,11 @@
                     <DataGridTextColumn Header="HEX 코드" Binding="{Binding ColorHex}" Width="120">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="FontFamily"        Value="Consolas"/>
-                                <Setter Property="Foreground"        Value="#666666"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment"   Value="Center"/>
+                                <Setter Property="FontFamily"          Value="Consolas"/>
+                                <Setter Property="Foreground"          
+                                        Value="{DynamicResource SecondaryTextBrush}"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -100,23 +105,25 @@
             </DataGrid>
 
             <!-- ── 우측: 추가/수정 폼 ── -->
-            <Border Grid.Column="2" Background="#F8F9FA" VerticalAlignment="Top"
-                    BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="20">
+            <Border Grid.Column="2" BorderBrush="{DynamicResource ThemeBorderBrush}" 
+                    Background="{DynamicResource SectionBackgroundBrush}" Padding="20"
+                    VerticalAlignment="Top" BorderThickness="1" CornerRadius="8">
                 <StackPanel>
 
                     <!-- 폼 제목 -->
-                    <TextBlock Text="카테고리 추가 / 수정" Foreground="#2C3E50"
-                               FontSize="15" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                    <TextBlock Text="카테고리 추가 / 수정" FontWeight="SemiBold" Margin="0,0,0,20"
+                               FontSize="15" Foreground="{DynamicResource PrimaryTextBursh}"/>
                     
                     <!-- 이름 입력 -->
-                    <TextBlock Text="카테고리 이름" FontSize="12" Foreground="#7F8C8D" Margin="0,0,0,4"/>
+                    <TextBlock Text="카테고리 이름" FontSize="12" Margin="0,0,0,4"
+                               Foreground="{DynamicResource SecondaryTextBrush}"/>
                     <TextBox Text="{Binding EditName, UpdateSourceTrigger=PropertyChanged}"
                              BorderBrush="#DDDDDD" BorderThickness="1"
                              Margin="0,0,0,16" Padding="10,8" FontSize="13"/>
 
                     <!-- HEX 코드 입력 -->
                     <TextBlock Text="색상 코드 (예: #3498DB)" Margin="0,0,0,4"
-                               Foreground="#7F8C8D" FontSize="12"/>
+                               Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12"/>
                     <TextBox Text="{Binding EditColorHex, UpdateSourceTrigger=PropertyChanged}"
                              BorderBrush="#DDDDDD" BorderThickness="1"
                              Margin="0,0,0,8" Padding="10,8" FontSize="13" FontFamily="Consolas"/>
@@ -131,7 +138,8 @@
                                 Converter={StaticResource HexToBrushConverter}}"/>
 
                     <!-- 색상 팔레트 -->
-                    <TextBlock Text="자주 쓰는 색상" Foreground="#95A5A6" FontSize="11" Margin="0,0,0,8"/>
+                    <TextBlock Text="자주 쓰는 색상" FontSize="11" Margin="0,0,0,8"
+                               Foreground="{DynamicResource SecondaryTextBrush}"/>
 
                     <!--
                         ItemsControl: PresetColors (List<string>)를 순회하며 버튼 생성
@@ -165,24 +173,21 @@
 
                     <!-- 저장 버튼 -->
                     <Button Content="✔ 저장" Command="{Binding SaveCategoryCommand}"
-                            Background="#3498DB" Foreground="White" Cursor="Hand"
-                            BorderThickness="0" FontSize="13" FontWeight="SemiBold" 
-                            Padding="0,10" Margin="0,0,0,6"/>
+                            Style="{StaticResource PrimaryButton}" Margin="0,0,0,6"/>
 
                     <!-- 수정 버튼 (SelectedCategory 없으면 비활성화) -->
-                    <Button Content="✎ 선택 항목 수정" Margin="0,0,0,6" Padding="0,10"
-                            Command="{Binding StartEditCommand}" BorderThickness="0"
-                            Background="#ECF0F1" Foreground="#2C3E50" FontSize="13"/>
+                    <Button Content="✎ 선택 항목 수정" Margin="0,0,0,6"
+                            Command="{Binding StartEditCommand}"
+                            Style="{StaticResource SecondaryButton}"/>
 
                     <!-- 삭제 버튼 (SelectedCategory 없으면 비활성화) -->
-                    <Button Content="🗑 선택 항목 삭제" BorderThickness="0" Cursor="Hand"
-                            Command="{Binding DeleteCategoryCommand}" FontSize="13"
-                            Background="#E74C3C" Foreground="White" Margin="0,0,0,6" Padding="0,10"/>
+                    <Button Content="🗑 선택 항목 삭제" Style="{StaticResource DangerButton}"
+                            Command="{Binding DeleteCategoryCommand}" Margin="0,0,0,6"/>
 
                     <!-- 초기화 버튼 -->
-                    <Button Content="✕ 초기화" BorderThickness="0" Cursor="Hand"
-                            Command="{Binding ClearFormCommand}" FontSize="13"
-                            Background="#BDC3C7" Foreground="White" Padding="0,10"/>
+                    <Button Content="✕ 초기화" Command="{Binding ClearFormCommand}"
+                            Style="{StaticResource SecondaryButton}"/>
+                    
                 </StackPanel>
             </Border>
         </Grid>

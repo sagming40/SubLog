@@ -24,4 +24,45 @@
     <!-- 섹션 구분 배경 (설정 항목 카드) -->
     <SolidColorBrush x:Key="SectionBackgroundBrush" Color="#1F2B47"/>
 
+    <!-- Input 컨트롤 (TextBox, ComboBox 등) -->
+    <SolidColorBrush x:Key="InputBackgroundBrush" Color="#1A2F4A"/>
+    <SolidColorBrush x:Key="InputForegroundBrush" Color="#ECF0F1"/>
+    <SolidColorBrush x:Key="InputBorderBrush"     Color="#2C4B6B"/>
+
+    <!-- ─────────────────────────────────────────────
+         버튼 Primary (다크 모드에선 조금 더 어두운 파랑)
+         ───────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="PrimaryButtonBackBrush"      Color="#2980B9"/>
+    <SolidColorBrush x:Key="PrimaryButtonHoverBrush"     Color="#3498DB"/>
+    <SolidColorBrush x:Key="PrimaryButtonPressedBrush"   Color="#1A5276"/>
+
+    <!-- ─────────────────────────────────────────────
+         버튼 Secondary (다크 배경에 맞는 어두운 회색 계열)
+         ───────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="SecondaryButtonBackBrush"    Color="#2C3E50"/>
+    <SolidColorBrush x:Key="SecondaryButtonHoverBrush"   Color="#34495E"/>
+    <SolidColorBrush x:Key="SecondaryButtonPressedBrush" Color="#1A252F"/>
+    <SolidColorBrush x:Key="SecondaryButtonForeBrush"    Color="#ECF0F1"/>
+
+    <!-- ─────────────────────────────────────────────
+         버튼 Danger (빨강 계열 — 삭제 등 위험 동작)
+         ───────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="DangerButtonBackBrush"       Color="#C0392B"/>
+    <SolidColorBrush x:Key="DangerButtonHoverBrush"      Color="#E74C3C"/>
+    <SolidColorBrush x:Key="DangerButtonPressedBrush"    Color="#922B21"/>
+
+    <!-- ─────────────────────────────────────────────
+         DataGrid (목록 화면 테이블)
+         ───────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="DataGridAltRowBrush"         Color="#1C2F4A"/>
+    <SolidColorBrush x:Key="DataGridRowHoverBrush"       Color="#1F3A5F"/>
+    <SolidColorBrush x:Key="DataGridRowSelectedBrush"    Color="#1A4A7A"/>
+    <SolidColorBrush x:Key="DataGridHeaderBackBrush"     Color="#0F2140"/>
+    <SolidColorBrush x:Key="DataGridHeaderForeBrush"     Color="#ECF0F1"/>
+
+    <!-- ─────────────────────────────────────────────
+         사이드바 네비게이션
+         ───────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="SidebarSelectedBrush"        Color="#2980B9"/>
+    <SolidColorBrush x:Key="SidebarHoverBrush"           Color="#2C4B6B"/>
 </ResourceDictionary>

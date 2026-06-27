@@ -4,6 +4,422 @@
              xmlns:local="clr-namespace:SubLog"
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
-         
+
+        <!-- =====================================================
+             전역 폰트 설정
+             x:Key 없는 Style = 암묵적 스타일
+             → 앱 전체 TextBlock에 자동 적용 (x:Key 지정 불필요)
+             ===================================================== -->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <!-- TextBox 암묵적 스타일 + ControlTemplate -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background"        Value="{DynamicResource InputBackgroundBrush}"/>
+            <Setter Property="Foreground"        Value="{DynamicResource InputForegroundBrush}"/>
+            <Setter Property="BorderBrush"       Value="{DynamicResource InputBorderBrush}"/>
+            <Setter Property="BorderThickness"   Value="1"/>
+            <Setter Property="Padding"           Value="8,4"/>
+            <Setter Property="CaretBrush"        Value="{DynamicResource InputForegroundBrush}"/>
+            <Setter Property="SelectionBrush"    Value="{DynamicResource PrimaryButtonBackBrush}"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <!--
+                            Border가 배경/테두리를 직접 그림
+                            → 시스템 테마 우회 → DynamicResource 색상 정상 반영
+                        -->
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="4"
+                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                  Padding="{TemplateBinding Padding}"
+                                  Focusable="False"
+                                  HorizontalScrollBarVisibility="Hidden"
+                                  VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- 포커스 들어왔을 때 테두리 파랗게 -->
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush"
+                                Value="{DynamicResource PrimaryButtonBackBrush}"/>
+                            </Trigger>
+                            <!-- 비활성화 시 반투명 -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBox 암묵적 스타일 + ControlTemplate -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Background"      Value="{DynamicResource InputBackgroundBrush}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource InputForegroundBrush}"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource InputBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding"         Value="8,4"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <!--
+                        ComboBox 본체 (선택된 항목 표시 영역 + 드롭다운 버튼)
+                    -->
+                            <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="24"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- 선택된 값 표시 -->
+                                    <ContentPresenter Grid.Column="0"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"/>
+
+                                    <!-- 드롭다운 화살표 버튼 -->
+                                    <ToggleButton Grid.Column="1"
+                                          x:Name="toggleButton"
+                                          IsChecked="{Binding IsDropDownOpen,
+                                              RelativeSource={RelativeSource TemplatedParent},
+                                              Mode=TwoWay}"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          Focusable="False"
+                                          Cursor="Hand">
+                                        <ToggleButton.Template>
+                                            <ControlTemplate TargetType="ToggleButton">
+                                                <Border Background="Transparent">
+                                                    <!-- ▼ 화살표 -->
+                                                    <TextBlock Text="▾"
+                                                       Foreground="{DynamicResource SecondaryTextBrush}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="11"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </ToggleButton.Template>
+                                    </ToggleButton>
+                                </Grid>
+                            </Border>
+
+                            <!--
+                        드롭다운 팝업
+                        Placement=Bottom → ComboBox 바로 아래에 표시
+                        AllowsTransparency=True → CornerRadius 적용을 위해 필요
+                    -->
+                            <Popup x:Name="PART_Popup"
+                           IsOpen="{TemplateBinding IsDropDownOpen}"
+                           Placement="Bottom"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           PopupAnimation="Slide">
+                                <Border x:Name="dropdownBorder"
+                                Background="{DynamicResource InputBackgroundBrush}"
+                                BorderBrush="{DynamicResource InputBorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                MinWidth="{TemplateBinding ActualWidth}"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <ScrollViewer>
+                                        <!-- 항목 목록 표시 영역 -->
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <!-- 포커스 들어왔을 때 테두리 파랗게 -->
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush"
+                                Value="{DynamicResource PrimaryButtonBackBrush}"/>
+                            </Trigger>
+                            <!-- 비활성화 시 반투명 -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBoxItem 암묵적 스타일 (드롭다운 항목 hover 색) -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground"  Value="{DynamicResource InputForegroundBrush}"/>
+            <Setter Property="Background"  Value="Transparent"/>
+            <Setter Property="Padding"     Value="8,6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="itemBorder"
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="itemBorder" Property="Background"
+                                Value="{DynamicResource DataGridRowHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="itemBorder" Property="Background"
+                                Value="{DynamicResource PrimaryButtonBackBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- CheckBox 암묵적 스타일 -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground"   Value="{DynamicResource PrimaryTextBrush}"/>
+        </Style>
+
+        <!-- =====================================================
+             버튼 스타일 3종 (Primary / Secondary / Danger)
+             · 여기 = Application.Resources 직접 정의 공간
+             · MergedDictionaries(테마 파일)와 완전히 별개
+             · 색상만 DynamicResource → 테마 전환 시 자동 갱신 ✅
+             ===================================================== -->
+
+        <!-- ── Primary (파랑 — 저장, 확인 등 주요 동작) ── -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background"      Value="{DynamicResource PrimaryButtonBackBrush}"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding"         Value="16,8"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="MinHeight"       Value="34"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}" CornerRadius="6"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{DynamicResource PrimaryButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{DynamicResource PrimaryButtonPressedBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Secondary (회색 — 취소, 닫기 등 보조 동작) ── -->
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background"      Value="{DynamicResource SecondaryButtonBackBrush}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource SecondaryButtonForeBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding"         Value="16,8"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="MinHeight"       Value="34"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}" CornerRadius="6"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{DynamicResource SecondaryButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{DynamicResource SecondaryButtonPressedBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Danger (빨강 — 삭제 등 위험 동작) ── -->
+        <Style x:Key="DangerButton" TargetType="Button">
+            <Setter Property="Background"      Value="{DynamicResource DangerButtonBackBrush}"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding"         Value="16,8"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="MinHeight"       Value="34"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{DynamicResource DangerButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{DynamicResource DangerButtonPressedBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- =====================================================
+             사이드바 네비게이션 버튼 (RadioButton 기반)
+             GroupName="Navigation" → 하나만 선택 상태 유지
+             IsChecked=True 일 때 → SidebarSelectedBrush 배경
+             ===================================================== -->
+        <Style x:Key="NavButton" TargetType="RadioButton">
+            <Setter Property="Background"                 Value="Transparent"/>
+            <Setter Property="Foreground"                 Value="#CBD5E0"/>
+            <Setter Property="BorderThickness"            Value="0"/>
+            <Setter Property="Padding"                    Value="16,12"/>
+            <Setter Property="FontSize"                   Value="13"/>
+            <Setter Property="Cursor"                     Value="Hand"/>
+            <Setter Property="GroupName"                  Value="Navigation"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+
+                            <!-- 마우스 올렸을 때 -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{DynamicResource SidebarHoverBrush}"/>
+                            </Trigger>
+
+                            <!-- 선택된 상태 (파랑 강조) -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{DynamicResource SidebarSelectedBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- =====================================================
+             DataGrid 스타일 4종
+             사용법: DataGrid에 각각 Style / RowStyle /
+                     CellStyle / ColumnHeaderStyle 속성으로 지정
+             ===================================================== -->
+
+        <!-- ── DataGrid 전체 (배경, 교번색, 선, 행 높이) ── -->
+        <Style x:Key="SubLogDataGrid" TargetType="DataGrid">
+            <Setter Property="Background"               Value="{DynamicResource CardBackgroundBrush}"/>
+            <Setter Property="Foreground"               Value="{DynamicResource PrimaryTextBrush}"/>
+            <Setter Property="BorderThickness"          Value="0"/>
+            <Setter Property="RowBackground"            Value="{DynamicResource CardBackgroundBrush}"/>
+            <Setter Property="AlternatingRowBackground" Value="{DynamicResource DataGridAltRowBrush}"/>
+            <Setter Property="GridLinesVisibility"      Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+            <Setter Property="VerticalGridLinesBrush"   Value="Transparent"/>
+            <Setter Property="SelectionMode"            Value="Single"/>
+            <Setter Property="CanUserAddRows"           Value="False"/>
+            <Setter Property="CanUserDeleteRows"        Value="False"/>
+            <Setter Property="AutoGenerateColumns"      Value="False"/>
+            <Setter Property="HeadersVisibility"        Value="Column"/>
+            <Setter Property="FontSize"                 Value="13"/>
+            <Setter Property="RowHeight"                Value="44"/>
+        </Style>
+
+        <!-- ── Row (hover + 선택 배경색) ── -->
+        <Style x:Key="SubLogDataGridRow" TargetType="DataGridRow">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource DataGridRowHoverBrush}"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource DataGridRowSelectedBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ── Cell (선택 시 WPF 기본 파란 오버레이 제거) ── -->
+        <Style x:Key="SubLogDataGridCell" TargetType="DataGridCell">
+            <Setter Property="BorderThickness"          Value="0"/>
+            <Setter Property="FocusVisualStyle"         Value="{x:Null}"/>
+            <Setter Property="Padding"                  Value="12,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background"  Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Foreground"  Value="{DynamicResource PrimaryTextBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ── ColumnHeader (제목 행) ── -->
+        <Style x:Key="SubLogDataGridHeader" TargetType="DataGridColumnHeader">
+            <Setter Property="Background"                 Value="{DynamicResource DataGridHeaderBackBrush}"/>
+            <Setter Property="Foreground"                 Value="{DynamicResource DataGridHeaderForeBrush}"/>
+            <Setter Property="FontWeight"                 Value="SemiBold"/>
+            <Setter Property="FontSize"                   Value="12"/>
+            <Setter Property="Padding"                    Value="12,10"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment"   Value="Center"/>
+            <Setter Property="BorderThickness"            Value="0,0,0,1"/>
+            <Setter Property="BorderBrush"                Value="{DynamicResource ThemeBorderBrush}"/>
+        </Style>
     </Application.Resources>
 </Application>

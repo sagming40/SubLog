@@ -796,12 +796,12 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 
 ---
 
-## ⏳ EPIC 4. 완성 & 포트폴리오
+## 🔁 EPIC 4. 완성 & 포트폴리오 — 진행중 🔁
 
 > 💡 **이 EPIC의 목표**
 > "작동하는 앱" → "보여주고 싶은 앱"으로 업그레이드. 포트폴리오 제출 준비 완료.
 
-### ⏳ Task 4-1 · 스타일 & 비주얼 폴리쉬 (Style + ControlTemplate)
+### ✅ Task 4-1 · 스타일 & 비주얼 폴리쉬 (Style + ControlTemplate)
 
 > 💡 **WPF Style이란?**
 > HTML/CSS의 CSS처럼, 여러 컨트롤에 동일한 디자인을 한 번에 적용하는 방법.
@@ -821,10 +821,10 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 </Application.Resources>
 ```
 
-- [ ]  공통 버튼 Style 정의 (Primary / Secondary / Danger 3종)
-- [ ]  DataGrid 행 hover 효과 + 교번색 행 적용
-- [ ]  사이드바 네비게이션 선택 상태 강조 처리
-- [ ]  전체 앱 폰트 통일 (`Segoe UI` 또는 `Noto Sans KR`)
+- [x]  공통 버튼 Style 정의 (Primary / Secondary / Danger 3종)
+- [x]  DataGrid 행 hover 효과 + 교번색 행 적용
+- [x]  사이드바 네비게이션 선택 상태 강조 처리
+- [x]  전체 앱 폰트 통일 (`Segoe UI` 또는 `Noto Sans KR`)
 
 ### ⏳ Task 4-2 · 데이터 유효성 검사 & 예외 처리
 
@@ -884,7 +884,7 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 | 3-3 | 결제일 알림 시스템 (D-Day 배지) | 고급 기능 | P2 | ✅ 완료 |
 | 3-4 | 통계 분석 뷰 (월별 막대 차트) | 고급 기능 | P1 | ✅ 완료 |
 | 3-5 | 한국수출입은행 환율 API 연동 | 고급 기능 | 🔥 P1 | ✅ 완료 |
-| 4-1 | 스타일 & 비주얼 폴리쉬 | 완성 | P1 | ⏳ 예정 |
+| 4-1 | 스타일 & 비주얼 폴리쉬 | 완성 | P1 | ✅ 완료 |
 | 4-2 | 데이터 유효성 검사 & 예외 처리 | 완성 | P1 | ⏳ 예정 |
 | 4-3 | MSIX 패키징 | 완성 | P2 | ⏳ 예정 |
 | 4-4 | GitHub README 완성 + GIF 데모 | 완성 | P1 | ⏳ 예정 |
@@ -894,11 +894,11 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 
 > 🔥 **개발 우선순위**
 >
-> 1. ✅ Task 1-1 ~ 1-6: 프로젝트 생성 + NuGet 설치 + DB 구축 → 완료
-> 2. ✅ Task 2-1 ~ 2-3: MainWindow + Dashboard + SubscriptionList → 완료
-> 3. ✅ Task 2-4: AddEditSubscriptionDialog → 다음 작업 → 완료
-> 4. ✅ Task 2-5: 구독 카탈로그 → 2-4 직후 연결 구현 → 완료
-> 5. ⏳ Task 3-5: 환율 API 연동 → 포트폴리오 최대 차별화 포인트 (면접 어필 핵심)
+> 1. ✅ Task 1-1 ~ 1-6: 프로젝트 생성 + NuGet 설치 + DB 구축 → 완료 ✅
+> 2. ✅ Task 2-1 ~ 2-3: MainWindow + Dashboard + SubscriptionList → 완료 ✅
+> 3. ✅ Task 2-4: AddEditSubscriptionDialog → 다음 작업 → 완료 ✅
+> 4. ✅ Task 2-5: 구독 카탈로그 → 2-4 직후 연결 구현 → 완료 ✅
+> 5. ✅ Task 3-5: 환율 API 연동 → 포트폴리오 최대 차별화 포인트 (면접 어필 핵심) → 완료 ✅
 
 ---
 
@@ -940,7 +940,7 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 - D-Day 계산은 Extensions/SubscriptionExtensions.cs 확장 메서드로 중앙화
 - Converter에 {Binding} (객체 전체)을 넘기는 패턴 사용
 
-### ### [Task 3-5 핵심 패턴 및 교훈]
+### [Task 3-5 핵심 패턴 및 교훈]
 
 1~5월 막대 차트가 표시되지 않는 문제.
  - 구독 시작일(StartDate)을 수정해도 DB에 저장되지 않는 버그가 원인.
@@ -1001,5 +1001,52 @@ API 키 보안 처리
   - 신버전: oapi.koreaexim.go.kr
   - 일일 호출 가능 횟수: 1,000회 제한 (앱 시작 시 1회 호출로 최소화)
   - 주말/공휴일: 빈 배열([]) 반환 → 직전 영업일 날짜로 재요청 필요
+
+### [Task 4-1 핵심 패턴 & 주의사항]
+
+  ControlTemplate PART_ 네이밍 규칙
+  - TextBox 내부 입력 영역: 반드시 x:Name="PART_ContentHost"
+  - ComboBox 드롭다운: 반드시 x:Name="PART_Popup"
+  - 이름을 바꾸면 WPF가 내부적으로 못 찾아서 입력/드롭다운이 아예 작동 안 함.
+  - ControlTemplate 재정의 시 PART_ 이름은 절대 변경 불가.
+
+  WPF TextBox/ComboBox 다크모드 적용 방법
+  - Background 속성만 바꾸는 것으로는 안 됨.
+    WPF 기본 ControlTemplate이 Windows 시스템 테마를 직접 참조하기 때문.
+  - ControlTemplate을 직접 재정의해야만 DynamicResource 색상이 반영됨.
+  - App.xaml에 암묵적 스타일(x:Key 없는 Style)로 한 번만 정의하면
+    앱 전체 자동 적용.
+
+  MergedDictionaries vs Application.Resources 직접 정의
+  - Application.Current.Resources.MergedDictionaries.Clear()는
+    MergedDictionaries 안의 것만 제거함.
+  - Application.Resources에 직접 정의한 Style·Brush는 Clear()의 영향을 안 받음.
+  - 테마 파일은 MergedDictionaries에, 전역 스타일은 직접 정의 공간에 두는 것이 올바른 구조.
+
+  PreviewMouseLeftButtonDown + Button 충돌 패턴
+  - UserControl 전체에 PreviewMouseLeftButtonDown 이벤트를 걸면
+    버튼 클릭도 이 이벤트가 먼저 가로챔.
+  - UX 편의 기능(선택 해제 등)을 구현할 때는
+    클릭 위치가 Button 안이면 early return 처리 필수.
+    안 하면 버튼 Command가 실행되기 전에 선택이 해제되어 CanExecute=false 발생.
+
+  xaml.cs 코드비하인드 파일 신규 작성 시 생성자 필수
+  - public 생성자 + InitializeComponent() 가 없으면 XAML이 파싱되지 않아
+    화면이 빈 상태로 렌더링됨.
+  - VS가 자동 생성하는 기본 템플릿에는 있지만,
+    직접 작성하거나 코드를 교체할 때 실수로 빠지기 쉬움.
+
+  RadioButton 기반 사이드바 선택 상태 관리
+  - Button → RadioButton 교체 + GroupName 동일하게 설정하면
+    하나만 선택 상태 유지가 자동으로 보장됨 (ViewModel 수정 불필요).
+  - IsChecked Trigger로 선택된 항목 강조 스타일 적용.
+  - 첫 번째 항목에만 IsChecked="True" 로 기본 선택 지정.
+
+  도넛 차트 레이블 겹침 해결
+  - PolarLabelsPosition.Middle → PolarLabelsPosition.Outer 로 바꾸면
+    레이블이 조각 바깥으로 나옴.
+  - Outer 사용 시 글자색은 White 불가 (배경이 흰색이라 안 보임)
+    → SKColor.Parse("#333333") 같은 어두운 색으로 지정.
+  - 전체 합계 대비 일정 비율 미만 조각은 레이블 숨기고 범례로 대체하는 방식 권장.
 
 *SubLog WORKFLOW v1.1 · 사공민규 · 최초 작성 2026.06.22 · 수정 2026.06.24*

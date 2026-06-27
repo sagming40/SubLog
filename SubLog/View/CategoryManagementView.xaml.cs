@@ -24,5 +24,33 @@ namespace SubLog.View
         {
             InitializeComponent();
         }
+
+        // ─────────────────────────────────────────────────────
+        // UserControl 전체 범위에서 클릭 감지
+        // → 행 위가 아닌 어디를 클릭해도 선택 해제
+        // ─────────────────────────────────────────────────────
+        private void UserControl_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var hit = VisualTreeHelper.HitTest(this, e.GetPosition(this));
+            if (hit == null) return;
+
+            DependencyObject? dep = hit.VisualHit;
+            while (dep != null && dep is not DataGridRow)
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+
+            // 빈 공간 or 행 외부 클릭 → 선택 해제
+            if (dep is null)
+            {
+                CategoryDataGrid.UnselectAll();
+            }
+            // 이미 선택된 행 재클릭 → 선택 해제 + 재선택 방지
+            else if (dep is DataGridRow row && row.IsSelected)
+            {
+                CategoryDataGrid.UnselectAll();
+                e.Handled = true;
+            }
+        }
     }
 }

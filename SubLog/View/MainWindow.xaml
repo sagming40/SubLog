@@ -4,12 +4,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-
         xmlns:view="clr-namespace:SubLog.View"
-        mc:Ignorable="d"
+        mc:Ignorable="d" 
         Title="SubLog - 구독관리" Height="720" Width="1080"
-        MinHeight="600" MinWidth="900"
-        WindowStartupLocation="CenterScreen">
+        MinHeight="600" MinWidth="900" 
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI">
 
     <!--
     ╔══════════════════════════════════════════════════════╗
@@ -67,38 +67,29 @@
 
                 <!-- ▶ 네비게이션 버튼 목록 -->
                 <StackPanel DockPanel.Dock="Top" Margin="12,16,12,0">
+                    
+                    <!-- IsChecked="True" → 앱 시작 시 대시보드가 기본 선택 -->
+                    <RadioButton Content="📊 대시보드" IsChecked="True" Margin="0,2"
+                                 Style="{StaticResource NavButton}"
+                                 Command="{Binding NavigateDashboardCommand}"/>
 
-                    <Button Content="📊 대시보드" Padding="16,12" Margin="0,2"
-                            Command="{Binding NavigateDashboardCommand}"
-                            HorizontalContentAlignment="Left"
-                            Background="Transparent" Foreground="White"
-                            BorderThickness="0" FontSize="13" Cursor="Hand"/>
-
-                    <Button Content="📋 구독 목록" Padding="16,12" Margin="0,2"
-                            Command="{Binding NavigateSubscriptionCommand}"
-                            HorizontalContentAlignment="Left"
-                            Background="Transparent" Foreground="White"
-                            BorderThickness="0" FontSize="13" Cursor="Hand"/>
+                    <RadioButton Content="📋 구독 목록" Margin="0,2"
+                                 Style="{StaticResource NavButton}"
+                                 Command="{Binding NavigateSubscriptionCommand}"/>
                     
                     <!-- ✅ 아래 버튼 추가 -->
-                    <Button Content="🏷 카테고리" Padding="16,12" Margin="0,2"
-                            Command="{Binding NavigateCategoryManagementCommand}"
-                            HorizontalContentAlignment="Left"
-                            Background="Transparent" Foreground="White"
-                            BorderThickness="0" FontSize="13" Cursor="Hand"/>
+                    <RadioButton Content="🏷 카테고리" Margin="0,2"
+                                 Style="{StaticResource NavButton}"
+                                 Command="{Binding NavigateCategoryManagementCommand}"/>
 
                     <!-- ✅ Task 3-4 추가 ㅡ 📈 통계 분석 사이드바 버튼 -->
-                    <Button Content="📈 통계 분석" Padding="16,12" Margin="0,2"
-                            Command="{Binding NavigateStatisticsCommand}"
-                            HorizontalContentAlignment="Left"
-                            Background="Transparent" Foreground="White"
-                            BorderThickness="0" FontSize="13" Cursor="Hand"/>
+                    <RadioButton Content="📈 통계 분석" Margin="0,2"
+                                 Style="{StaticResource NavButton}"
+                                 Command="{Binding NavigateStatisticsCommand}"/>
 
-                    <Button Content="⚙️ 설정" Padding="16,12" Margin="0,2"
-                            Command="{Binding NavigateSettingsCommand}"
-                            HorizontalContentAlignment="Left"
-                            Background="Transparent" Foreground="White"
-                            BorderThickness="0" FontSize="13" Cursor="Hand"/>
+                    <RadioButton Content="⚙️ 설정" Margin="0,2"
+                                 Style="{StaticResource NavButton}"
+                                 Command="{Binding NavigateSettingsCommand}"/>
                     
                 </StackPanel>
             </DockPanel>
