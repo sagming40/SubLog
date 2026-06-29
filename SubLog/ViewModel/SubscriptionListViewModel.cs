@@ -126,6 +126,8 @@ namespace SubLog.ViewModel
         [RelayCommand]
         private async Task Refresh()
         {
+            // throw new Exception("전역 예외 처리 테스트 🔥");  // ← 임시로 추가
+
             await LoadDataAsync();
         }
 
@@ -194,7 +196,7 @@ namespace SubLog.ViewModel
 
             // 카탈로그에서 선택한 값을 입력칸에 미리 채워넣기
             dialogVm.Name                 = catalogItem.Name;
-            dialogVm.Price                = catalogItem.Price;
+            dialogVm.PriceInput           = catalogItem.Price.ToString();
             dialogVm.SelectedBillingCycle = catalogItem.Cycle;
             dialogVm.SelectedCategory     = matchedCategory;
             dialogVm.CurrencyCode         = catalogItem.CurrencyCode; // ✅ Task 3-5 추가

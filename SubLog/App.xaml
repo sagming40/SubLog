@@ -44,19 +44,36 @@
                                   VerticalScrollBarVisibility="Hidden"/>
                         </Border>
                         <ControlTemplate.Triggers>
+
                             <!-- 포커스 들어왔을 때 테두리 파랗게 -->
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush"
-                                Value="{DynamicResource PrimaryButtonBackBrush}"/>
+                                        Value="{DynamicResource PrimaryButtonBackBrush}"/>
                             </Trigger>
+
                             <!-- 비활성화 시 반투명 -->
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="border" Property="Opacity" Value="0.5"/>
                             </Trigger>
+
+                            <!-- 유효성 오류 시 빨간 테두리 (IsFocused 뒤에 있어야 우선순위↑) -->
+                            <Trigger Property="Validation.HasError" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#E74C3C"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="1.5"/>
+                            </Trigger>
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <!-- 유효성 오류 시 ToolTip으로 오류 메시지 표시 -->
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" 
+                            Value="{Binding RelativeSource={RelativeSource Self},
+                                    Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!-- ComboBox 암묵적 스타일 + ControlTemplate -->
@@ -72,8 +89,8 @@
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
                             <!--
-                        ComboBox 본체 (선택된 항목 표시 영역 + 드롭다운 버튼)
-                    -->
+                                ComboBox 본체 (선택된 항목 표시 영역 + 드롭다운 버튼)
+                            -->
                             <Border x:Name="border"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -120,10 +137,10 @@
                             </Border>
 
                             <!--
-                        드롭다운 팝업
-                        Placement=Bottom → ComboBox 바로 아래에 표시
-                        AllowsTransparency=True → CornerRadius 적용을 위해 필요
-                    -->
+                                드롭다운 팝업
+                                Placement=Bottom → ComboBox 바로 아래에 표시
+                                AllowsTransparency=True → CornerRadius 적용을 위해 필요
+                            -->
                             <Popup x:Name="PART_Popup"
                            IsOpen="{TemplateBinding IsDropDownOpen}"
                            Placement="Bottom"
@@ -146,15 +163,18 @@
                         </Grid>
 
                         <ControlTemplate.Triggers>
+                            
                             <!-- 포커스 들어왔을 때 테두리 파랗게 -->
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush"
                                 Value="{DynamicResource PrimaryButtonBackBrush}"/>
                             </Trigger>
+                            
                             <!-- 비활성화 시 반투명 -->
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="border" Property="Opacity" Value="0.5"/>
                             </Trigger>
+                            
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>

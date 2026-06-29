@@ -16,14 +16,16 @@
             <!-- ─── 서비스명 ─── -->
             <TextBlock Text="서비스명 *" Margin="0,0,0,6" FontSize="13"
                        FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextBrush}"/>
-            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged,
+                                          ValidatesOnDataErrors=True}"
                        VerticalContentAlignment="Center"  Margin="0,0,0,16"
                        Height="38" Padding="10,0" FontSize="14"/>
 
             <!-- ─── 금액 ─── -->
             <TextBlock Text="금액 (원) *" Margin="0,0,0,6" FontSize="13"
                        FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextBrush}"/>
-            <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{Binding PriceInput, UpdateSourceTrigger=PropertyChanged,
+                                                ValidatesOnDataErrors=True}"
                        VerticalContentAlignment="Center" Margin="0,0,0,16"
                        Height="38" Padding="10,0" FontSize="14"/>
 
@@ -53,7 +55,8 @@
             <!-- ─── 결제일 ─── -->
             <TextBlock Text="결제일 (1일 ~ 31일)" Margin="0,0,0,6" FontSize="13"
                        FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextBrush}"/>
-            <TextBox Text="{Binding BillingDay, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{Binding BillingDayInput, UpdateSourceTrigger=PropertyChanged,
+                                                ValidatesOnDataErrors=True}"
                        VerticalContentAlignment="Center" Margin="0,0,0,16"
                        Height="38" Padding="10,0" FontSize="14"/>
 

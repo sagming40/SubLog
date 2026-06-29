@@ -21,5 +21,9 @@ namespace SubLog.Model
 
         // 이 카테고리에 속한 구독 목록 - EF Core가 자동으로 JOIN 처리해줌
         public List<Subscription> Subscriptions { get; set; } = new();
+
+        // ✅ Task 4-2 추가: 콤보박스 선택 항목 표시 용
+        // DataTemplate이 적용되기 전 ToString()이 호출될 때를 대비한 폴백
+        public override string ToString() => Name ?? string.Empty;
     }
 }
