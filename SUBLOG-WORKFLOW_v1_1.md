@@ -1132,8 +1132,51 @@ API 키 보안 처리
         우리 메시지 대신 원시 예외 메시지 출력.
         → string 바인딩으로 변경 + ValidatesOnExceptions 제거로 해결.
 
-오류 6) 카테고리 콤보박스에 "SubLog.Model.Category" 풀네임 표시
-        커스텀 ControlTemplate에서 DataTemplate 전에 ToString()이 호출됨.
-        → Category.cs에 ToString() 오버라이드 추가하여 해결.
+### [카테고리 관리 화면 — 추가 버그 수정 모음 (2026.06.30)]
+
+오류 1) 카테고리 관리에 HEX 형식 검증 누락 — 쓰레기 값이 DB에 그대로 저장됨
+        SaveCategoryAsync()에 이름 빈칸 체크만 있고 HEX 코드 형식 체크가
+        없어 "#sdfgdsagsdgas" 같은 값도 그대로 저장됨.
+        HexToBrushConverter가 화면에서는 회색으로 fallback 처리해줘서
+        겉으로는 정상처럼 보였지만 DB에는 잘못된 값이 영구 저장되는 상태였음.
+        → SaveCategoryAsync()에 Regex.IsMatch(EditColorHex, "^#[0-9A-Fa-f]{6}$")
+          검증 추가, 실패 시 MessageBox로 안내 후 저장 차단.
+
+오류 2) ComboBox — 화살표 부분만 클릭해야 드롭다운 열림
+        App.xaml ComboBox ControlTemplate에서 ToggleButton이
+        Grid.Column="1"(화살표 24px 칸)에만 배치되어 있어 텍스트 영역
+        클릭 시 반응 없었음.
+        → ToggleButton을 Grid.Column="0" Grid.ColumnSpan="2"로 변경해
+          전체 폭을 덮도록 수정. 위에 겹쳐 그려지는 ContentPresenter에는
+          IsHitTestVisible="False"를 추가해 클릭이 아래 ToggleButton으로
+          통과하도록 처리.
+        ⚠️ 적용 시 흔한 실수: ColumnSpan만 추가하고 기존 Grid.Column="1"을
+          "0"으로 바꾸는 걸 빠뜨리면 칸이 부족해 원래 크기로 되돌아감
+          (시작 칸 번호 + Span 칸 수가 실제 ColumnDefinitions 범위를
+          벗어나면 안 됨).
+
+오류 3) 유효성 오류 시 빨간 테두리 모서리가 안 맞음 (둥근 테두리 + 각진 테두리 겹침)
+        Validation.HasError=True가 되면 ControlTemplate.Triggers에서 그린
+        둥근 빨간 테두리 위에, WPF 기본 Validation.ErrorTemplate(각진 빨간
+        Adorner)이 자동으로 추가로 덧그려져 두 테두리가 겹쳐 틈이 생김.
+        → Style에 Validation.ErrorTemplate을
+          <ControlTemplate><AdornedElementPlaceholder/></ControlTemplate>
+          로 재정의해 WPF 기본 Adorner를 비활성화. 직접 그린 둥근 테두리만 남김.
+
+### [백로그 — 발표 후 진행]
+
+  카테고리 관리 화면 IDataErrorInfo 미적용
+  - 현재는 SaveCategoryAsync()의 MessageBox 검증으로 잘못된 데이터가
+    DB에 저장되는 것은 막혀있어 기능적 결함은 없음.
+  - 다만 AddEditSubscriptionDialog처럼 타이핑 중 실시간 빨간 테두리는
+    아직 미구현 (저장 버튼을 눌러야만 오류를 알 수 있음).
+  - 이름/색상 두 필드를 동시에 빨간 테두리로 보여주려면 IDataErrorInfo +
+    _touchedFields + OnXxxChanging 패턴 적용 필요 (AddEditSubscriptionViewModel과
+    동일 패턴, Task 4-2 참고).
+  - StartEdit()/ClearForm()에서 EditName/EditColorHex에 값을 채울 때는
+    공개 속성이 아닌 백킹 필드(_editName 등)에 직접 대입 + OnPropertyChanged()
+    수동 호출 방식으로 우회해야 함 (그렇지 않으면 폼을 열거나 초기화하자마자
+    빨간 테두리가 잘못 뜨는 문제 발생).
+  - 발표 전 시간 부족으로 보류, 발표 후 적용 예정.
 
 *SubLog WORKFLOW v1.1 · 사공민규 · 최초 작성 2026.06.22 · 수정 2026.06.30*

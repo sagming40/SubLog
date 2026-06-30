@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Text.RegularExpressions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SubLog.Model;
 using SubLog.Repository;
@@ -106,6 +107,20 @@ namespace SubLog.ViewModel
                     "입력 오류",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
+                return;
+            }
+
+            // ✅ 추가 — 유효성 검사 2: HEX 코드 형식이 올바른지 검사
+            // 정규식 설명:
+            //   ^#         : 반드시 '#'으로 시작
+            //   [0-9A-Fa-f]: 0~9 또는 A~F(대소문자) 글자만 허용
+            //   {6}        : 그 글자가 정확히 6개 연속으로 와야 함
+            //   $          : 그리고 거기서 문자열이 끝나야 함 (뒤에 군더더기 글자 없어야 함)
+            if (!Regex.IsMatch(EditColorHex, "^#[0-9A-Fa-f]{6}$"))
+            {
+                MessageBox.Show(
+                    "색상 코드는 #RRGGBB 형식(예: #3498DB)으로 입력해주세요.", "입력 오류",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 

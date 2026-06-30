@@ -99,28 +99,30 @@ namespace SubLog.ViewModel
                 // GroupBy: 카테고리 이름으로 그룹 묶기
                 // Select: 각 그룹을 { 카테고리명, 합계 }로 변환
                 // OrderByDescending: 금액 큰 순으로 정렬
+                // ── ✅ 수정 ── 그룹화 기준을 Category 객체 자체로 변경 → ColorHex 접근 가능
                 var groups = activeSubs
-                    .GroupBy(s => s.Category?.Name ?? "미분류")
+                    .GroupBy(s => s.Category)   // Category? 객체로 그룹화 (null이면 "미분류" 묶음)
                     .Select(g => new
                     {
-                        Name  = g.Key,
-                        Total = g.Sum(s => s.CurrencyCode == "USD"
-                                      ? Math.Round(s.Price * _exchangeRate)
-                                      : s.Price)
+                        Name     = g.Key?.Name ?? "미분류",
+                        ColorHex = string.IsNullOrWhiteSpace(g.Key?.ColorHex) ? "#95A5A6" : g.Key!.ColorHex,
+                        Total    = g.Sum(s => s.CurrencyCode == "USD"
+                                         ? Math.Round(s.Price * _exchangeRate)
+                                         : s.Price)
                     })
                     .OrderByDescending(x => x.Total)
                     .ToList();
 
                 // 차트 색상 팔레트 (카테고리 수만큼 순환 사용)
-                var palette = new[]
-                {
-                "#3498DB",  // 파랑
-                "#2ECC71",  // 초록
-                "#E74C3C",  // 빨강
-                "#F39C12",  // 주황
-                "#9B59B6",  // 보라
-                "#1ABC9C",  // 청록
-            };
+                /* var palette = new[]
+                   {
+                       "#3498DB",  // 파랑
+                       "#2ECC71",  // 초록
+                       "#E74C3C",  // 빨강
+                       "#F39C12",  // 주황
+                       "#9B59B6",  // 보라
+                       "#1ABC9C",  // 청록
+                   }; */
 
                 DonutSeries.Clear();    // 기존 데이터 지우고
                 for (int i = 0; i < groups.Count; i++)
@@ -129,8 +131,10 @@ namespace SubLog.ViewModel
                     {
                         Values = new[] { groups[i].Total },    // 값: 해당 카테고리 합계
                         Name = groups[i].Name,               // 범례에 표시될 이름
-                        Fill = new SolidColorPaint(          // 채우기 색상
-                                          SKColor.Parse(palette[i % palette.Length])),
+
+                        // 채우기 색상
+                        // ── ✅ 수정: 카테고리 고유 색상 사용 ──
+                        Fill = new SolidColorPaint(SKColor.Parse(groups[i].ColorHex)),
                         InnerRadius = 60,   // 도넛 구멍 반지름 (px)
                     });
                 }

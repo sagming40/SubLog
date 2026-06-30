@@ -24,6 +24,17 @@
             <Setter Property="CaretBrush"        Value="{DynamicResource InputForegroundBrush}"/>
             <Setter Property="SelectionBrush"    Value="{DynamicResource PrimaryButtonBackBrush}"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
+
+            <!-- ✅ 추가: WPF 기본 각진 에러 테두리(Adorner) 끄기
+                 → ControlTemplate.Triggers에서 직접 그린 둥근 빨간 테두리만 남도록 -->
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <AdornedElementPlaceholder/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -32,16 +43,16 @@
                             → 시스템 테마 우회 → DynamicResource 색상 정상 반영
                         -->
                         <Border x:Name="border"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="4"
-                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                             <ScrollViewer x:Name="PART_ContentHost"
-                                  Padding="{TemplateBinding Padding}"
-                                  Focusable="False"
-                                  HorizontalScrollBarVisibility="Hidden"
-                                  VerticalScrollBarVisibility="Hidden"/>
+                                          Padding="{TemplateBinding Padding}"
+                                          Focusable="False"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden"/>
                         </Border>
                         <ControlTemplate.Triggers>
 
@@ -92,10 +103,10 @@
                                 ComboBox 본체 (선택된 항목 표시 영역 + 드롭다운 버튼)
                             -->
                             <Border x:Name="border"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="4">
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="4">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -103,32 +114,27 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!-- 선택된 값 표시 -->
-                                    <ContentPresenter Grid.Column="0"
-                                              Content="{TemplateBinding SelectionBoxItem}"
-                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                              Margin="{TemplateBinding Padding}"
-                                              VerticalAlignment="Center"
-                                              HorizontalAlignment="Left"/>
+                                    <ContentPresenter Grid.Column="0" IsHitTestVisible="False"
+                                                      Content="{TemplateBinding SelectionBoxItem}"
+                                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                      Margin="{TemplateBinding Padding}"
+                                                      VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                      <!-- ✅ 추가: IsHitTestVisible="False" → 텍스트가 클릭을 가로채지 않고
+                                                                   아래에 깔린 ToggleButton한테 클릭을 그대로 통과시켜줌 -->
 
                                     <!-- 드롭다운 화살표 버튼 -->
-                                    <ToggleButton Grid.Column="1"
-                                          x:Name="toggleButton"
-                                          IsChecked="{Binding IsDropDownOpen,
-                                              RelativeSource={RelativeSource TemplatedParent},
-                                              Mode=TwoWay}"
-                                          Background="Transparent"
-                                          BorderThickness="0"
-                                          Focusable="False"
-                                          Cursor="Hand">
+                                    <ToggleButton Grid.Column="0" Grid.ColumnSpan="2"
+                                                  x:Name="toggleButton" Focusable="False" Cursor="Hand"
+                                                  IsChecked="{Binding IsDropDownOpen, Mode=TwoWay,
+                                                              RelativeSource={RelativeSource TemplatedParent}}"
+                                                  Background="Transparent" BorderThickness="0">
                                         <ToggleButton.Template>
                                             <ControlTemplate TargetType="ToggleButton">
                                                 <Border Background="Transparent">
-                                                    <!-- ▼ 화살표 -->
-                                                    <TextBlock Text="▾"
+                                                    <!-- ▼ 화살표는 오른쪽 끝에만 표시 -->
+                                                    <TextBlock Text="▾" Margin="0,0,8,0" FontSize="11"
                                                        Foreground="{DynamicResource SecondaryTextBrush}"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"
-                                                       FontSize="11"/>
+                                                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                                 </Border>
                                             </ControlTemplate>
                                         </ToggleButton.Template>
