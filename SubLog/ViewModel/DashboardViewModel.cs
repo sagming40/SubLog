@@ -39,6 +39,10 @@ namespace SubLog.ViewModel
         [ObservableProperty]
         private ObservableCollection<Subscription> _upcomingSubscriptions = new();
 
+        // ✅ 추가: 오늘 적용된 USD → KRW 환율 (화면 표시용)
+        [ObservableProperty]
+        private decimal _todayExchangeRate;     // → TodayExchangeRate
+
         // ══════════════════════════════════════════
         // LiveCharts2 도넛 차트 데이터
         // ⚠️ List<ISeries> 쓰면 갱신 안 됨 → ObservableCollection 필수!
@@ -67,6 +71,10 @@ namespace SubLog.ViewModel
             {
                 // ✅ Task 3-5 추가 ㅡ 환율 먼저 로드
                 _exchangeRate = await _exchangeService.GetUsdToKrwAsync();
+
+                // ✅ 추가: 화면 표시용 바인딩 속성에도 같은 값 반영
+                TodayExchangeRate = _exchangeRate;
+
                 // EPIC 1에서 만든 Repository를 통해 DB에서 전체 구독 조회
                 var subs = await _repo.GetAllAsync();
 
