@@ -35,6 +35,26 @@ namespace SubLog.View
             if (hit == null) return;
 
             DependencyObject? dep = hit.VisualHit;
+
+            // ── ✅ 추가: 폼 컨트롤(Button, TextBox 등) 위 클릭이면
+            //    선택 해제 로직 자체를 건너뜀 (early return)
+            DependencyObject? checkDep = dep;
+            while (checkDep != null)
+            {
+                if (checkDep is Button || checkDep is TextBox)
+                {
+                    return; // 버튼/입력창 클릭 → 선택 해제 대상 아님, 그대로 통과
+                }
+                
+                if (checkDep is DataGridRow)
+                {
+                    break;  // DataGridRow 위에서 누른 거면 아래 기존 로직으로 진행
+                }
+
+                checkDep = VisualTreeHelper.GetParent(checkDep);
+            }
+
+            // ── 기존 로직: DataGridRow를 찾을 때까지 부모로 거슬러 올라감
             while (dep != null && dep is not DataGridRow)
             {
                 dep = VisualTreeHelper.GetParent(dep);

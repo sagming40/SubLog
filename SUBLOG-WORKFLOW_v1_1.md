@@ -6,7 +6,7 @@
 | 파일형태 | 문서 |
 | 버전 | v1.1 |
 | 생성일 | 2026년 6월 22일 |
-| 수정일 | 2026년 6월 24일 |
+| 수정일 | 2026년 6월 30일 |
 | 담당자 | 사공민규 |
 | 기술 스택 | C# · WPF (.NET 8) · MVVM · EF Core 8.0 · SQLite · LiveCharts2 · 한국수출입은행 API |
 
@@ -826,12 +826,12 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 - [x]  사이드바 네비게이션 선택 상태 강조 처리
 - [x]  전체 앱 폰트 통일 (`Segoe UI` 또는 `Noto Sans KR`)
 
-### ⏳ Task 4-2 · 데이터 유효성 검사 & 예외 처리
+### ✅ Task 4-2 · 데이터 유효성 검사 & 예외 처리
 
-- [ ]  IDataErrorInfo 또는 DataAnnotations 기반 입력 유효성 검사 완성
-- [ ]  EF Core 예외 (중복, 제약조건 위반) try-catch 처리
-- [ ]  사용자 친화적 에러 메시지 MessageBox 표시
-- [ ]  앱 전역 예외 처리 (`App.xaml.cs` 의 `DispatcherUnhandledException`)
+- [x]  IDataErrorInfo 또는 DataAnnotations 기반 입력 유효성 검사 완성
+- [x]  EF Core 예외 (중복, 제약조건 위반) try-catch 처리
+- [x]  사용자 친화적 에러 메시지 MessageBox 표시
+- [x]  앱 전역 예외 처리 (`App.xaml.cs` 의 `DispatcherUnhandledException`)
 
 ### ⏳ Task 4-3 · MSIX 패키징 (배포 준비)
 
@@ -885,7 +885,7 @@ public async Task<decimal> GetRateWithFallbackAsync(ISettingsRepository settings
 | 3-4 | 통계 분석 뷰 (월별 막대 차트) | 고급 기능 | P1 | ✅ 완료 |
 | 3-5 | 한국수출입은행 환율 API 연동 | 고급 기능 | 🔥 P1 | ✅ 완료 |
 | 4-1 | 스타일 & 비주얼 폴리쉬 | 완성 | P1 | ✅ 완료 |
-| 4-2 | 데이터 유효성 검사 & 예외 처리 | 완성 | P1 | ⏳ 예정 |
+| 4-2 | 데이터 유효성 검사 & 예외 처리 | 완성 | P1 | ✅ 완료 |
 | 4-3 | MSIX 패키징 | 완성 | P2 | ⏳ 예정 |
 | 4-4 | GitHub README 완성 + GIF 데모 | 완성 | P1 | ⏳ 예정 |
 | 4-5 | 최종 테스트 & 포트폴리오 리뷰 | 완성 | P1 | ⏳ 예정 |
@@ -1030,6 +1030,22 @@ API 키 보안 처리
     클릭 위치가 Button 안이면 early return 처리 필수.
     안 하면 버튼 Command가 실행되기 전에 선택이 해제되어 CanExecute=false 발생.
 
+  ▶ 실제 발생 사례 (CategoryManagementView, 2026.06.30 발견·수정)
+    - 증상: 카테고리 행 선택 → 수정/삭제 버튼은 정상 활성화(CanExecute=true)
+      되지만 클릭해도 아무 동작 없음. 예외 메시지도 없어 원인 파악 어려웠음.
+    - 원인: "빈 공간 클릭 시 행 선택 해제" UX를
+      UserControl_PreviewMouseLeftButtonDown(터널링 이벤트)으로 구현했는데,
+      버튼 클릭도 "행 외부 클릭"으로 오판 → 버튼 Click이 발생하기도 전에
+      SelectedCategory가 null로 초기화되며 CanExecute가 false로 전환됨.
+    - 해결: 클릭 지점에서 부모 방향으로 VisualTree를 탐색하다가
+      Button 또는 TextBox를 먼저 만나면 그 즉시 return하여
+      선택 해제 로직 자체를 건너뛰도록 분기 추가.
+      (DataGridRow를 먼저 만났을 때만 기존 선택 해제 로직 수행)
+    - 교훈: CanExecute가 true(버튼 활성화)인데도 클릭이 안 먹는 증상은
+      예외가 없다고 로직 문제가 아니라고 단정할 수 없음 —
+      이벤트 라우팅 순서(Tunneling vs Bubbling) 자체가 원인일 수 있음.
+    - 수정 파일: View/CategoryManagementView.xaml.cs
+
   xaml.cs 코드비하인드 파일 신규 작성 시 생성자 필수
   - public 생성자 + InitializeComponent() 가 없으면 XAML이 파싱되지 않아
     화면이 빈 상태로 렌더링됨.
@@ -1049,4 +1065,75 @@ API 키 보안 처리
     → SKColor.Parse("#333333") 같은 어두운 색으로 지정.
   - 전체 합계 대비 일정 비율 미만 조각은 레이블 숨기고 범례로 대체하는 방식 권장.
 
-*SubLog WORKFLOW v1.1 · 사공민규 · 최초 작성 2026.06.22 · 수정 2026.06.24*
+### ✅ Task 4-2 · 데이터 유효성 검사 & 예외 처리
+
+> ⚠️ **IDataErrorInfo 구현 시 핵심 원칙**
+> WPF는 바인딩된 속성마다 `this[string columnName]` 인덱서를 자동 호출함.
+> columnName은 실제 속성명(예: "Name", "BillingDayInput")과 정확히 일치해야 함.
+> 불일치해도 빌드 오류가 없고 빨간 테두리만 영원히 안 뜨는 무음 버그 발생.
+
+> ⚠️ **int/decimal 필드는 빈 문자열을 저장할 수 없음**
+> Price(decimal), BillingDay(int) 타입은 사용자가 칸을 비워도
+> 기존 값(0, 1)이 그대로 유지됨 → CanSave()가 통과되어 저장 버튼 활성화됨.
+> → PriceInput(string), BillingDayInput(string)으로 변경 후
+>   decimal.TryParse / int.TryParse 로 직접 파싱해야 함.
+
+> ⚠️ **OnChanging vs OnChanged 타이밍**
+> _touchedFields 추가는 반드시 OnXxxChanging(변경 전) 에서 해야 함.
+> OnXxxChanged(변경 후)는 IDataErrorInfo 인덱서 호출보다 늦어
+> _touchedFields가 비어있는 상태로 검사됨 → 빨간 테두리 미표시.
+
+> ⚠️ **커스텀 ControlTemplate이 있는 TextBox의 빨간 테두리**
+> 전역 Style.Triggers만으로는 작동하지 않음.
+> ControlTemplate.Triggers 안에 Validation.HasError 트리거를 직접 추가해야 함.
+> ToolTip은 Style.Triggers에 별도로 추가.
+
+관련 파일: `ViewModel/AddEditSubscriptionViewModel.cs`, `App.xaml`,
+`View/AddEditSubscriptionDialog.xaml`, `App.xaml.cs`, `Model/Category.cs`,
+`ViewModel/SubscriptionListViewModel.cs`
+
+- [x]  IDataErrorInfo 구현 (_touchedFields + _initComplete 조합)
+- [x]  Price → PriceInput(string), BillingDay → BillingDayInput(string) 타입 변경
+- [x]  OnXxxChanging 훅으로 터치 필드 추적
+- [x]  CanSave() — TryParse 기반 유효성 검사
+- [x]  App.xaml ControlTemplate.Triggers에 Validation.HasError 트리거 추가
+- [x]  App.xaml Style.Triggers에 ToolTip 트리거 추가
+- [x]  AddEditSubscriptionDialog.xaml — PriceInput/BillingDayInput 바인딩 수정
+- [x]  DbUpdateException + Exception 이중 catch 추가
+- [x]  Category.cs — ToString() 오버라이드 추가 (콤보박스 풀네임 표시 방지)
+- [x]  SubscriptionListViewModel — dialogVm.PriceInput = catalogItem.Price.ToString() 수정
+- [x]  App.xaml.cs — DispatcherUnhandledException 전역 예외 처리 등록
+- [x]  **✅ Task 4-2 완료 → GitHub Desktop으로 커밋 Push**
+
+
+[이번 Task에서 만났던 오류와 해결 방법]
+
+오류 1) IDataErrorInfo switch 키 오타 — 치명적 무음 버그
+        switch 케이스를 "ServiceName", "BillingDate"로 작성했으나
+        실제 속성명은 "Name", "BillingDay"였음.
+        빌드 오류 없이 빨간 테두리만 영원히 미표시됨.
+        → 속성명과 switch 키를 정확히 일치시켜 해결.
+
+오류 2) 다이얼로그 열자마자 빨간 테두리 표시
+        Name(""), Price(0) 초기값이 IDataErrorInfo를 즉시 통과하여 발생.
+        → _touchedFields로 사용자가 건드린 필드만 검사하는 방식으로 해결.
+
+오류 3) OnChanged 타이밍 문제 — 빨간 테두리 미표시
+        OnXxxChanged(값 변경 후)에서 _touchedFields 추가 시
+        IDataErrorInfo가 이미 호출된 이후라 빈 상태로 검사됨.
+        → OnXxxChanging(값 변경 전)으로 변경하여 해결.
+
+오류 4) 결제일/금액 비워도 저장 버튼 활성화
+        int/decimal은 빈 문자열 저장 불가 → 기존값(0, 1) 유지 → CanSave() 오통과.
+        → string 타입으로 변경 후 TryParse로 직접 검사하여 해결.
+
+오류 5) 금액 빈칸 시 "The input string was not in correct format" 출력
+        ValidatesOnExceptions=True가 FormatException을 잡아
+        우리 메시지 대신 원시 예외 메시지 출력.
+        → string 바인딩으로 변경 + ValidatesOnExceptions 제거로 해결.
+
+오류 6) 카테고리 콤보박스에 "SubLog.Model.Category" 풀네임 표시
+        커스텀 ControlTemplate에서 DataTemplate 전에 ToString()이 호출됨.
+        → Category.cs에 ToString() 오버라이드 추가하여 해결.
+
+*SubLog WORKFLOW v1.1 · 사공민규 · 최초 작성 2026.06.22 · 수정 2026.06.30*
